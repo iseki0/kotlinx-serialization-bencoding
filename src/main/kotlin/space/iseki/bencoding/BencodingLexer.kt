@@ -1,27 +1,19 @@
 package space.iseki.bencoding
 
-internal class BencodingLexer(
-    private val input: Input,
-) {
-    private var lastValue: Token = next()
-
-    fun peek() = lastValue
-
-    fun consume(): Token = lastValue.also { lastValue = next() }
-
-    private fun next(): Token {
-        var ch = input.read()
-        return when (ch) {
-            -1 -> Token.EOF
-            'l'.code -> Token.ListStart
-            'd'.code -> Token.DictStart
-            'e'.code -> Token.End
+internal fun Input.lexer() = sequence {
+    while (true){
+        var ch = read()
+        when(ch){
+            -1 -> yield(Token.EOF)
+            'l'.code -> yield(Token.ListStart)
+            'd'.code -> yield(Token.DictStart)
+            'e'.code -> yield(Token.End)
             'i'.code -> {
                 var buf = ByteArray(16)
                 var ptr = 0
                 while (true) {
-                    ch = input.read()
-                    if (ch == -1) input.fail("unexpected EOF")
+                    ch = read()
+                    if (ch == -1) fail("unexpected EOF")
                     if (ch == 'e'.code) {
                         break
                     }
@@ -31,28 +23,27 @@ internal class BencodingLexer(
                     buf[ptr] = ch.toByte()
                     ptr++
                 }
-                buf.copyOf(ptr).asSegment()
+                yield(buf.copyOf(ptr).asSegment())
             }
-
-            in '0'.code..'9'.code -> {
+            in '0'.code..'9'.code ->{
                 // string
                 var i = 0
                 while (true) {
-                    if (i < 0) input.fail("length overflow")
-                    if (ch == -1) input.fail("unexpected EOF")
+                    if (i < 0) fail("length overflow")
+                    if (ch == -1) fail("unexpected EOF")
                     if (ch == ':'.code) break
                     val n = ch.toChar() - '0'
-                    if (n !in 0..9) input.fail("expect a number")
+                    if (n !in 0..9) fail("expect a number")
                     i = i * 10 + n
-                    ch = input.read()
+                    ch = read()
                 }
-                input.readN(i).asSegment()
+                yield(readN(i).asSegment())
             }
-
-            else -> input.fail("unexpected character: ${ch.toChar()}")
-        }.also { lastValue = it; debug(it) }
+            else -> fail("unexpected character: ${ch.toChar()}")
+        }
     }
-}
+}.map { it.also { debug(it) } }
+
 
 private fun ByteArray.asSegment() = Token.Segment(this)
 

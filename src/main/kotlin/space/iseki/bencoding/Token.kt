@@ -20,6 +20,8 @@ internal sealed interface Token {
     open class Segment(val data: ByteArray) : Token {
         override fun toString(): String = "SEGMENT:" + data.decodeToString()
 
-        companion object : Segment(byteArrayOf())
+        companion object : Segment(byteArrayOf()) {
+            override fun toString(): String = "SEGMENT"
+        }
     }
 }
