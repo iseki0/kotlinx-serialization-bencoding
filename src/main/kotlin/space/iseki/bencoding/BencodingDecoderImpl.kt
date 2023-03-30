@@ -12,96 +12,87 @@ internal class BencodingDecoderImpl(private val lexer: BencodingLexer) : Bencodi
      */
     private val states = ArrayDeque<Int>()
 
-    override fun decodeSegment(): ByteArray = (lexer.next() as? Token.Segment)?.data ?: fail("expect a string/integer")
-
-
-    private var alreadyReadEnd = false
+    override fun decodeSegment(): ByteArray =
+        (lexer.consume() as? Token.Segment)?.data ?: fail("expect a string/integer")
 
     private fun decodeMapIndex(descriptor: SerialDescriptor): Int {
+        debug("decodeMapIndex")
         do {
-            when (val v = lexer.next()) {
-                is Token.Segment -> {
-                    val idx = descriptor.getElementIndex(v.data.decodeToString())
-                    if (idx == CompositeDecoder.UNKNOWN_NAME) {
-                        skipValue()
-                        continue
-                    }
-                    return idx
-                }
-
-                is Token.End -> {
-                    alreadyReadEnd = true
-                    return CompositeDecoder.DECODE_DONE
-                }
-
-                else -> fail("unexpected token, $v")
+            val token = lexer.peek()
+            if (token !is Token.Segment) unexpected(token, listOf(Token.Segment))
+            val key = token.data.decodeToString()
+            val index = descriptor.getElementIndex(key)
+            if (index != CompositeDecoder.UNKNOWN_NAME) {
+                return index
             }
-        } while (false)
-        unreachable()
+            skipValue()
+        } while (true)
     }
 
     private fun decodeListIndex(descriptor: SerialDescriptor): Int {
-        return when (lexer.next()) {
-            is Token.End -> {
-                alreadyReadEnd = true
-                CompositeDecoder.DECODE_DONE
-            }
-
-            is Token.EOF -> fail("unexpected EOF")
-            else -> states.removeLast().also { states.addLast(it + 1) }
-        }
+        debug("decodeListIndex")
+        return states.removeLast().also { states.addLast(it + 1) }
     }
 
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
-        if (states.isEmpty()) fail("current not in a structure")
+        debug("decodeElementIndex")
+        ensureInStructure()
         return if (states.last() == -1) {
-            decodeMapIndex(descriptor)
+            decodeMapIndex(descriptor) // map
         } else {
-            decodeListIndex(descriptor)
+            decodeListIndex(descriptor) // list
         }
     }
 
-
     override fun endStructure(descriptor: SerialDescriptor) {
+        debug("endStructure")
+        skipCurrentStructure()
         states.removeLast()
-        if (alreadyReadEnd) {
-            alreadyReadEnd = false
-            return
-        }
-        skipStructured(1)
     }
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
-        when (lexer.next()) {
+        debug("beginStructure")
+        when (val token = lexer.consume()) {
             is Token.DictStart -> states.addLast(-1)
             is Token.ListStart -> states.addLast(0)
-            else -> fail("expect a list or dict")
+            else -> unexpected(token, listOf(Token.DictStart, Token.ListStart))
         }
         return this
     }
 
-    override fun fail(reason: String): Nothing = throw BencodingDecodeException(reason)
 
-    private fun skipStructured(n: Int) {
-        var counter = n
+    override fun fail(reason: String): Nothing = throw BencodingDecodeException(reason)
+    private fun unexpectedEOF(): Nothing = fail("unexpected EOF")
+    private fun unexpected(token: Token, expects: List<Token>): Nothing =
+        fail("unexpected token $token, expects: ${expects.joinToString()}")
+
+    private fun ensureInStructure() {
+        if (states.isEmpty()) fail("not a structure")
+    }
+
+    private fun skipCurrentStructure() {
+        debug("skipCurrentStructure")
+        var counter = 1
         while (counter > 0) {
-            when (lexer.next()) {
+            when (lexer.peek()) {
+                is Token.EOF -> unexpectedEOF()
                 is Token.End -> counter--
-                is Token.DictStart, Token.ListStart -> counter++
-                is Token.EOF -> fail("unexpected EOF")
-                is Token.Segment -> Unit
+                is Token.DictStart, is Token.ListStart -> counter++
+                else -> Unit
             }
+            lexer.consume()
         }
     }
 
     private fun skipValue() {
-        when (lexer.next()) {
-            is Token.Segment, is Token.EOF -> return
-            else -> Unit
+        debug("skipValue")
+        when (val token = lexer.consume()) {
+            is Token.End -> fail("unexpected token: $token")
+            is Token.EOF -> unexpectedEOF()
+            is Token.Segment -> Unit
+            is Token.DictStart, Token.ListStart -> skipCurrentStructure()
         }
-        skipStructured(1)
     }
 }
-
 
 private fun unreachable(): Nothing = error("unreachable")

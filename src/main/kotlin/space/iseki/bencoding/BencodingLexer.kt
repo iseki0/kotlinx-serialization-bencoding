@@ -3,8 +3,13 @@ package space.iseki.bencoding
 internal class BencodingLexer(
     private val input: Input,
 ) {
+    private var lastValue: Token = next()
 
-    fun next(): Token {
+    fun peek() = lastValue
+
+    fun consume(): Token = lastValue.also { lastValue = next() }
+
+    private fun next(): Token {
         var ch = input.read()
         return when (ch) {
             -1 -> Token.EOF
@@ -45,32 +50,9 @@ internal class BencodingLexer(
             }
 
             else -> input.fail("unexpected character: ${ch.toChar()}")
-        }.also { println(it) }
+        }.also { lastValue = it; debug(it) }
     }
 }
 
 private fun ByteArray.asSegment() = Token.Segment(this)
-
-internal sealed interface Token {
-    object ListStart : Token {
-        override fun toString(): String = "ListStart"
-    }
-
-    object DictStart : Token {
-        override fun toString(): String = "DictStart"
-    } // pre-End
-
-    object End : Token {
-        override fun toString(): String = "End"
-    }
-
-    object EOF : Token {
-        override fun toString(): String = "EOF"
-    }
-
-    @JvmInline
-    value class Segment(val data: ByteArray) : Token {
-        override fun toString(): String = "SEGMENT:" + data.decodeToString()
-    }
-}
 

@@ -10,7 +10,7 @@ class BencodingDecoderKtTest {
     @Serializable
     data class Meta(
         val announce: String,
-        @SerialName("announce-list") val announceList: List<String> = emptyList(),
+        @SerialName("announce-list") val announceList: List<List<String>> = emptyList(),
         val info: Info,
     ) {
         @Serializable

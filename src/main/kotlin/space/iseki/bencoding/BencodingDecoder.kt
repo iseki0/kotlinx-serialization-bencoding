@@ -19,3 +19,10 @@ inline fun <reified T> InputStream.decodeInBencoding() = decodeInBencoding(seria
 
 fun <T> InputStream.decodeInBencoding(serializer: KSerializer<T>) =
     BencodingDecoderImpl(BencodingLexer(WrappedInputStream(this))).let { serializer.deserialize(it) }
+
+@Suppress("NOTHING_TO_INLINE")
+@JvmName("-debug")
+internal inline fun debug(s: Any) {
+    println(s)
+}
+
