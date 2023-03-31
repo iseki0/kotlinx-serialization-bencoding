@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "space.iseki.bencode"
-version = "0.1.0-SNAPSHOT"
+if (version == "unspecified") version = "0.1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
