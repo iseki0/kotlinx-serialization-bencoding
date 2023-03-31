@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencode
 
 import java.io.InputStream
 
@@ -21,6 +21,6 @@ internal class WrappedInputStream(private val inputStream: InputStream) : Input 
     override fun readN(n: Int): ByteArray = inputStream.readNBytes(n).also { pos += it.size }
 
     override fun fail(reason: String): Nothing {
-        throw BencodingDecodeException("$reason [pos: $pos]")
+        throw BencodeDecodeException("$reason [pos: $pos]")
     }
 }

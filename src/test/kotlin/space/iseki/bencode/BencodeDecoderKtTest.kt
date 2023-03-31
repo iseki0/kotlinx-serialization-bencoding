@@ -1,11 +1,10 @@
-package space.iseki.bencoding
+package space.iseki.bencode
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-class BencodingDecoderKtTest {
+class BencodeDecoderKtTest {
 
     @Serializable
     data class Meta(
@@ -28,7 +27,7 @@ class BencodingDecoderKtTest {
     fun test() {
         val r = "test-torrents/ef11bce27e2f3a1e91ac4bc2367ad4cb5f45ec7a.torrent"
             .let(classLoader::getResourceAsStream)
-            .use { it.decodeBencoding<Meta>() }
+            .use { it.decodeBencode<Meta>() }
         println(r)
     }
 }

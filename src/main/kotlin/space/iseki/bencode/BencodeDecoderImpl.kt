@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencode
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -7,13 +7,13 @@ import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.modules.SerializersModule
 
-internal class BencodingDecoderImpl(
+internal class BencodeDecoderImpl(
     override val serializersModule: SerializersModule,
     private val lexer: Lexer,
-) : BencodingDecoder {
+) : BencodeDecoder {
     private val states = ArrayDeque<Int>()
 
-    private fun unexpect(message: String): Nothing = throw BencodingDecodeException(message)
+    private fun unexpect(message: String): Nothing = throw BencodeDecodeException(message)
     private fun unexpect(token: TokenInstance, vararg expects: TokenInstance): Nothing =
         unexpect("unexpected token $token, expects: ${expects.joinToString()}")
 

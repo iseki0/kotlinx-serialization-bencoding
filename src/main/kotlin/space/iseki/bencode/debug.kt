@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencode
 
 @Suppress("NOTHING_TO_INLINE")
 @JvmName("-debug")

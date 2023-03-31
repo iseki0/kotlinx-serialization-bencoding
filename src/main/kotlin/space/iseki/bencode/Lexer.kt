@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencode
 
 internal class Lexer(input: Input) {
     private var buffered: Token? = null

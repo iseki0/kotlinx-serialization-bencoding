@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencode
 
 internal interface TokenInstance
 internal sealed interface Token : TokenInstance {

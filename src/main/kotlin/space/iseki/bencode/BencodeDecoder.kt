@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencode
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -9,7 +9,7 @@ import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.serializer
 import java.io.InputStream
 
-interface BencodingDecoder : Decoder, CompositeDecoder {
+interface BencodeDecoder : Decoder, CompositeDecoder {
     fun decodeSegment(): ByteArray
     override fun decodeBoolean(): Boolean = decodeString().toBoolean()
 
@@ -74,10 +74,10 @@ interface BencodingDecoder : Decoder, CompositeDecoder {
 
 }
 
-class BencodingDecodeException(override val message: String) : RuntimeException()
+class BencodeDecodeException(override val message: String) : RuntimeException()
 
-inline fun <reified T> InputStream.decodeBencoding() = decodeBencoding(serializer<T>())
+inline fun <reified T> InputStream.decodeBencode() = decodeBencode(serializer<T>())
 
-fun <T> InputStream.decodeBencoding(deserializationStrategy: DeserializationStrategy<T>) =
-    BencodingDecoderImpl(EmptySerializersModule(), Lexer(WrappedInputStream(this)))
+fun <T> InputStream.decodeBencode(deserializationStrategy: DeserializationStrategy<T>) =
+    BencodeDecoderImpl(EmptySerializersModule(), Lexer(WrappedInputStream(this)))
         .let { deserializationStrategy.deserialize(it) }

@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization") version "1.8.10"
 }
 
-group = "space.iseki.bencoding"
+group = "space.iseki.bencode"
 version = "1.0-SNAPSHOT"
 
 repositories {
