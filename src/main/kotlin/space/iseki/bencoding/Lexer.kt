@@ -3,7 +3,8 @@ package space.iseki.bencoding
 internal class Lexer(input: Input) {
     private var buffered: Token? = null
     private val iter = input.tokenStream().iterator()
-    fun next(): Token {
+
+    fun consume(): Token {
         buffered?.let {
             buffered = null
             return it
@@ -61,7 +62,7 @@ private fun Input.tokenStream() = sequence {
             else -> fail("unexpected character: ${ch.toChar()}")
         }
     }
-}.map { it.also { debug(it) } }
+}//.map { it.also { debug(it) } }
 
 
 private fun ByteArray.asSegment() = Token.Segment(this)

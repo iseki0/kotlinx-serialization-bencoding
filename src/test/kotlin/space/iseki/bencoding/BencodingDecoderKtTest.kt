@@ -28,7 +28,7 @@ class BencodingDecoderKtTest {
     fun test() {
         val r = "test-torrents/ef11bce27e2f3a1e91ac4bc2367ad4cb5f45ec7a.torrent"
             .let(classLoader::getResourceAsStream)
-            .use { it.decodeInBencoding<Meta>() }
+            .use { it.decodeBencoding<Meta>() }
         println(r)
     }
 }

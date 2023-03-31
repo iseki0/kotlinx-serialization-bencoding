@@ -1,6 +1,7 @@
 package space.iseki.bencoding
 
-internal sealed interface Token {
+internal interface TokenInstance
+internal sealed interface Token : TokenInstance {
     object ListStart : Token {
         override fun toString(): String = "LIST_START"
     }
@@ -20,7 +21,7 @@ internal sealed interface Token {
     open class Segment(val data: ByteArray) : Token {
         override fun toString(): String = "SEGMENT:" + data.decodeToString()
 
-        companion object : Segment(byteArrayOf()) {
+        companion object : TokenInstance {
             override fun toString(): String = "SEGMENT"
         }
     }
