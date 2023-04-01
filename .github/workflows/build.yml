@@ -29,7 +29,7 @@ jobs:
           arguments: build
 
       - name: Run snapshot action
-        uses: mikepenz/gradle-dependency-submission@{latest}
+        uses: mikepenz/gradle-dependency-submission@v0.8.6
 
       - name: Publish
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
