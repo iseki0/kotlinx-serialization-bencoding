@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_USAGE")
+
 package space.iseki.bencoding
 
 import kotlinx.serialization.ExperimentalSerializationApi
