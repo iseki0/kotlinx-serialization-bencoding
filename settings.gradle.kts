@@ -1,3 +1,2 @@
-
-rootProject.name = "kotlinx-serialization-bencode"
+rootProject.name = "kotlinx-serialization-bencoding"
 
