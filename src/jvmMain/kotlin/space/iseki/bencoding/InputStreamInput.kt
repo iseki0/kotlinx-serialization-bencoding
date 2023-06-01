@@ -1,11 +1,15 @@
 package space.iseki.bencoding
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.serializer
 import java.io.InputStream
 
 private const val UNINITIALIZED = -2
 private const val EOF = -1
 
 internal class InputStreamI(private val inputStream: InputStream) : I {
+    override var pos: Int = 0
+        private set
 
     override fun lookahead(): Symbol = when (la()) {
         'l'.code -> Symbol.List
@@ -17,7 +21,7 @@ internal class InputStreamI(private val inputStream: InputStream) : I {
         else -> unrecognizedInput()
     }
 
-    override fun readText(): ByteArray = inputStream.readNBytes(readLength())
+    override fun readText(): ByteArray = readLength().let { n -> inputStream.readNBytes(n).also { pos += n } }
 
     override fun readNumber(): Long {
         var n = 0L
@@ -45,7 +49,7 @@ internal class InputStreamI(private val inputStream: InputStream) : I {
         when (lookahead()) {
             Symbol.EOF -> return
             Symbol.Dict, Symbol.List, Symbol.End -> read()
-            Symbol.Text -> inputStream.skipNBytes(readLength().toLong())
+            Symbol.Text -> readLength().let { n -> inputStream.skipNBytes(n.toLong()); pos += n }
             Symbol.Integer -> readNumber()
         }
     }
@@ -53,12 +57,12 @@ internal class InputStreamI(private val inputStream: InputStream) : I {
     private var _la = UNINITIALIZED
 
     private fun la() = when (_la) {
-        UNINITIALIZED -> inputStream.read().also { _la = it }
+        UNINITIALIZED -> inputStream.read().also { _la = it;pos++ }
         else -> _la
     }
 
     private fun read() = when (_la) {
-        UNINITIALIZED -> inputStream.read()
+        UNINITIALIZED -> inputStream.read().also { pos++ }
         else -> _la.also { _la = UNINITIALIZED }
     }
 
@@ -80,7 +84,12 @@ internal class InputStreamI(private val inputStream: InputStream) : I {
         else -> "unrecognized input, during $during"
     }.let { throw BencodingSerializationException(it) }
 
+    @Suppress("SameParameterValue")
     private fun error(msg: String): Nothing = throw BencodingSerializationException(msg)
 
 }
 
+inline fun <reified T> InputStream.decodeInBencoding() = decodeInBencoding(serializer<T>())
+
+fun <T> InputStream.decodeInBencoding(serializer: KSerializer<T>) =
+    BencodingDecoderImpl(InputStreamI(this)).decodeSerializableValue(serializer)

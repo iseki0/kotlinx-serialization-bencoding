@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     idea
+    id("org.jetbrains.kotlinx.kover")
 }
 
 repositories {
