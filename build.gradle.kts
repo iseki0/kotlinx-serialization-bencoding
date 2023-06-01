@@ -8,5 +8,5 @@ allprojects {
 }
 
 dependencies {
-    commonMainApi(libs.kotlinx.serialization.json)
+    commonMainApi(libs.kotlinx.serialization.core)
 }

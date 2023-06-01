@@ -1,6 +1,6 @@
 [versions]
 [libraries]
 # Kotlinx Serialization
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+kotlinx-serialization-core = "org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1"
 okio = "com.squareup.okio:okio:3.3.0"
 [bundles]
