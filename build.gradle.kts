@@ -9,5 +9,4 @@ allprojects {
 
 dependencies {
     commonMainApi(libs.kotlinx.serialization.json)
-    commonMainCompileOnly(libs.okio)
 }
