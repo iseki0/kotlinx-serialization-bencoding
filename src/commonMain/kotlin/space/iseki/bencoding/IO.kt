@@ -10,7 +10,7 @@ internal enum class Symbol {
 }
 
 internal interface I {
-    val pos: Int
+    val pos: Long
     fun lookahead(): Symbol
     fun readText(): ByteArray
     fun readNumber(): Long
