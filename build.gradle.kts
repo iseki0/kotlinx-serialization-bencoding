@@ -1,5 +1,6 @@
 plugins {
     `kmm-convention`
+    `maven-publish-convention`
 }
 
 allprojects {
