@@ -129,7 +129,3 @@ internal class InputStreamI(inputStream: InputStream) : I {
     }
 }
 
-inline fun <reified T> InputStream.decodeInBencoding() = decodeInBencoding(serializer<T>())
-
-fun <T> InputStream.decodeInBencoding(serializer: KSerializer<T>) =
-    BencodingDecoderImpl(InputStreamI(this)).decodeSerializableValue(serializer)
