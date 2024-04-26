@@ -3,21 +3,25 @@ package space.iseki.bencoding
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.serialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
-private val data = object {}::class.java.classLoader
-    .getResourceAsStream("d2cb5a6c67221f9abc2b5e0aa75556d80d287f83.torrent")!!
-    .use { it.readAllBytes() }
+private val data =
+    object {}::class.java.classLoader.getResourceAsStream("d2cb5a6c67221f9abc2b5e0aa75556d80d287f83.torrent")!!
+        .use { it.readAllBytes() }
 
 class InputStreamInputKtTest {
 
     @Test
     fun testDecoding() {
-        data.inputStream().decodeInBencoding<Meta>().also(::println)
+        val a = Bencode.decodeFromStream<Meta>(data.inputStream()).also(::println)
+        val b = Bencode.decodeFromByteArray<Meta>(data)
+        assertEquals(a, b)
     }
 }
 
@@ -46,7 +50,7 @@ data class Meta(
                 get() = serialDescriptor<String>()
 
             override fun deserialize(decoder: Decoder): Pieces =
-                (decoder as BencodingDecoder).decodeBytes().let(::Pieces)
+                (decoder as BencodeDecoder).decodeByteArray().let(::Pieces)
 
             override fun serialize(encoder: Encoder, value: Pieces) {
                 TODO("Not yet implemented")

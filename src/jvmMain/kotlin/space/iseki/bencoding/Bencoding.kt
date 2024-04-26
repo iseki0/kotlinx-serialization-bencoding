@@ -1,4 +1,4 @@
-@file:JvmName("Bencoding")
+@file:JvmName("BencodingJVM")
 
 package space.iseki.bencoding
 
@@ -6,7 +6,9 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import java.io.InputStream
 
-inline fun <reified T> InputStream.decodeInBencoding() = decodeInBencoding(serializer<T>())
+fun <T> Bencode.decodeFromStream(input: InputStream, serializer: KSerializer<T>): T =
+    serializer.deserialize(BencodeDecoder0(InputStreamLexer(input), serializersModule))
 
-fun <T> InputStream.decodeInBencoding(serializer: KSerializer<T>) =
-    BencodingDecoderImpl(InputStreamI(this)).decodeSerializableValue(serializer)
+inline fun <reified T> Bencode.decodeFromStream(input: InputStream) = decodeFromStream(input, serializer<T>())
+
+

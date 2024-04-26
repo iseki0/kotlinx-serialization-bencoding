@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 
 plugins {
     kotlin("multiplatform")
@@ -23,23 +24,26 @@ kotlin {
             compilerOptions.configure {
                 freeCompilerArgs.apply {
                     add("-Xlambdas=indy")
-                    add("-Xjvm-default=all-compatibility")
+                    add("-Xjvm-default=all")
+                    add("-Xassertions=jvm")
                 }
                 jvmToolchain(22)
             }
         }
     }
     jvm {
+        withJava()
         compilations.all {
             compilerOptions.configure {
                 jvmTarget = JvmTarget.JVM_17
             }
         }
     }
+    js(KotlinJsCompilerType.IR).browser {}
     sourceSets {
         all {
             languageSettings {
-                enableLanguageFeature("ContextReceivers")
+//                enableLanguageFeature("ContextReceivers")
             }
         }
         val commonMain by getting {
@@ -53,5 +57,10 @@ kotlin {
             }
         }
     }
+}
+
+tasks.withType<JavaCompile> {
+    targetCompatibility = "17"
+    sourceCompatibility = "17"
 }
 
