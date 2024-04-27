@@ -8,6 +8,15 @@ public final class space/iseki/bencoding/Bencode$Companion : space/iseki/bencodi
 	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 }
 
+public abstract interface class space/iseki/bencoding/BencodeCompositeDecoder : kotlinx/serialization/encoding/CompositeDecoder {
+	public abstract fun decodeByteArrayElement (Lkotlinx/serialization/descriptors/SerialDescriptor;I)[B
+}
+
+public final class space/iseki/bencoding/BencodeCompositeDecoder$DefaultImpls {
+	public static fun decodeCollectionSize (Lspace/iseki/bencoding/BencodeCompositeDecoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)I
+	public static fun decodeSequentially (Lspace/iseki/bencoding/BencodeCompositeDecoder;)Z
+}
+
 public final class space/iseki/bencoding/BencodeDecodeException : kotlinx/serialization/SerializationException {
 	public static final field Companion Lspace/iseki/bencoding/BencodeDecodeException$Companion;
 	public fun <init> (JLjava/lang/String;)V
@@ -18,15 +27,12 @@ public final class space/iseki/bencoding/BencodeDecodeException : kotlinx/serial
 public final class space/iseki/bencoding/BencodeDecodeException$Companion {
 }
 
-public abstract interface class space/iseki/bencoding/BencodeDecoder : kotlinx/serialization/encoding/CompositeDecoder, kotlinx/serialization/encoding/Decoder {
+public abstract interface class space/iseki/bencoding/BencodeDecoder : kotlinx/serialization/encoding/Decoder {
 	public abstract fun decodeByteArray ()[B
-	public abstract fun decodeByteArrayElement (Lkotlinx/serialization/descriptors/SerialDescriptor;I)[B
 }
 
 public final class space/iseki/bencoding/BencodeDecoder$DefaultImpls {
-	public static fun decodeCollectionSize (Lspace/iseki/bencoding/BencodeDecoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)I
 	public static fun decodeNullableSerializableValue (Lspace/iseki/bencoding/BencodeDecoder;Lkotlinx/serialization/DeserializationStrategy;)Ljava/lang/Object;
-	public static fun decodeSequentially (Lspace/iseki/bencoding/BencodeDecoder;)Z
 	public static fun decodeSerializableValue (Lspace/iseki/bencoding/BencodeDecoder;Lkotlinx/serialization/DeserializationStrategy;)Ljava/lang/Object;
 }
 
