@@ -1,7 +1,5 @@
 package space.iseki.bencoding
 
-import kotlin.jvm.JvmStatic
-
 internal interface Lexer {
     companion object {
         const val EOF = -1

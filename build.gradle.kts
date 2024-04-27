@@ -1,5 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 
 plugins {
     kotlin("multiplatform")
@@ -19,27 +19,14 @@ dependencies {
 }
 
 kotlin {
-    targets.all {
-        compilations.all {
-            compilerOptions.configure {
-                freeCompilerArgs.apply {
-                    add("-Xlambdas=indy")
-                    add("-Xjvm-default=all")
-                    add("-Xassertions=jvm")
-                }
-                jvmToolchain(22)
-            }
-        }
-    }
+    jvmToolchain(22)
     jvm {
-        withJava()
-        compilations.all {
-            compilerOptions.configure {
-                jvmTarget = JvmTarget.JVM_17
-            }
+        @OptIn(ExperimentalKotlinGradlePluginApi::class) compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+            freeCompilerArgs.add("-Xjvm-default=all")
         }
+        withJava()
     }
-    js(KotlinJsCompilerType.IR).browser {}
     sourceSets {
         all {
             languageSettings {
