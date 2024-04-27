@@ -10,7 +10,7 @@ import kotlinx.serialization.modules.SerializersModule
 
 @OptIn(ExperimentalSerializationApi::class)
 internal class BencodeDecoder0(private val lexer: Lexer, override val serializersModule: SerializersModule) :
-    BencodeDecoder {
+    BencodeDecoder, BencodeCompositeDecoder {
 
     private fun unsupported(kind: String): Nothing = throw BencodeDecodeException(
         lexer.pos(),
