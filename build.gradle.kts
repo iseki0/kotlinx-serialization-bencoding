@@ -10,12 +10,16 @@ plugins {
 }
 
 allprojects {
+    repositories {
+        mavenCentral()
+    }
     group = "space.iseki.bencoding"
     if (version == "unspecified") version = "0.1.1-SNAPSHOT"
 }
 
 dependencies {
     commonMainApi(libs.kotlinx.serialization.core)
+    commonTestImplementation(libs.kotlinx.serialization.core)
 }
 
 kotlin {
@@ -27,10 +31,28 @@ kotlin {
         }
         withJava()
     }
+    js {
+        browser {
+            webpackTask {
+//                output.libraryTarget = "commonjs2"
+            }
+        }
+        binaries.executable()
+    }
     sourceSets {
         all {
             languageSettings {
 //                enableLanguageFeature("ContextReceivers")
+            }
+        }
+        val jsMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib-js"))
+            }
+        }
+        val jsTest by getting {
+            dependencies {
+                implementation(kotlin("test-js"))
             }
         }
         val commonMain by getting {

@@ -10,7 +10,6 @@ internal interface Lexer {
         const val INTEGER = 5
         private fun Lexer.doThrow(message: String): Nothing = throw BencodeDecodeException(pos(), message)
 
-        @JvmStatic
         fun name(i: Int) = when (i) {
             EOF -> "EOF"
             END -> "END"

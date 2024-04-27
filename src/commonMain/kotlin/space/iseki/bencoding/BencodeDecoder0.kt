@@ -13,8 +13,7 @@ internal class BencodeDecoder0(private val lexer: Lexer, override val serializer
     BencodeDecoder, BencodeCompositeDecoder {
 
     private fun unsupported(kind: String): Nothing = throw BencodeDecodeException(
-        lexer.pos(),
-        "$kind is not supported"
+        lexer.pos(), "$kind is not supported"
     )
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -57,7 +56,14 @@ internal class BencodeDecoder0(private val lexer: Lexer, override val serializer
     ): T = el(descriptor, index) { deserializer.deserialize(this) }
 
     override fun decodeShortElement(descriptor: SerialDescriptor, index: Int) = el(descriptor, index, ::decodeShort)
-    override fun decodeStringElement(descriptor: SerialDescriptor, index: Int) = el(descriptor, index, ::decodeString)
+    override fun decodeStringElement(descriptor: SerialDescriptor, index: Int) = el(descriptor, index) {
+        if (descriptor.getElementAnnotations(index).any { it is StringInIso88591 }) {
+            decodeStringIso88591()
+        } else {
+            decodeString()
+        }
+    }
+
     override fun endStructure(descriptor: SerialDescriptor) = m.end()
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = apply { m.begin(descriptor) }
     override fun decodeBoolean(): Boolean = unsupported("boolean")
@@ -73,6 +79,7 @@ internal class BencodeDecoder0(private val lexer: Lexer, override val serializer
     override fun decodeNull(): Nothing? = null
     override fun decodeShort(): Short = decodeInt().toShort()
     override fun decodeString(): String = lexer.nextBytes().decodeToString()
+    override fun decodeStringIso88591(): String = bytes2StringIso88591(lexer.nextBytes())
     override fun decodeByteArray(): ByteArray = lexer.nextBytes()
 
     @OptIn(ExperimentalSerializationApi::class)
