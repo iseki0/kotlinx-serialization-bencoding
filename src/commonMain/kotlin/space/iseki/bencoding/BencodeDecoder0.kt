@@ -9,8 +9,9 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.modules.SerializersModule
 
 @OptIn(ExperimentalSerializationApi::class)
-internal class BencodeDecoder0(private val lexer: Lexer, override val serializersModule: SerializersModule) :
-    BencodeDecoder, BencodeCompositeDecoder {
+internal class BencodeDecoder0(
+    private val lexer: Lexer, override val serializersModule: SerializersModule, val options: BencodeOptions
+) : BencodeDecoder, BencodeCompositeDecoder {
 
     private fun unsupported(kind: String): Nothing = throw BencodeDecodeException(
         lexer.pos(), "$kind is not supported"
@@ -30,15 +31,18 @@ internal class BencodeDecoder0(private val lexer: Lexer, override val serializer
     override fun decodeBooleanElement(descriptor: SerialDescriptor, index: Int): Boolean =
         unsupported(descriptor, index)
 
-    override fun decodeFloatElement(descriptor: SerialDescriptor, index: Int): Float = unsupported(descriptor, index)
-    override fun decodeDoubleElement(descriptor: SerialDescriptor, index: Int): Double = unsupported(descriptor, index)
+    override fun decodeFloatElement(descriptor: SerialDescriptor, index: Int): Float =
+        options.floatStrategy.decodeFloat(descriptor, index)
+
+    override fun decodeDoubleElement(descriptor: SerialDescriptor, index: Int): Double =
+        options.doubleStrategy.decodeDouble(descriptor, index)
+
     override fun decodeByteArrayElement(descriptor: SerialDescriptor, index: Int) =
         el(descriptor, index, ::decodeByteArray)
 
     override fun reportError(message: String, descriptor: SerialDescriptor, index: Int): Nothing {
         throw BencodeDecodeException(
-            lexer.pos(),
-            "$message, at ${descriptor.serialName}/${descriptor.getElementName(index)}"
+            lexer.pos(), "$message, at ${descriptor.serialName}/${descriptor.getElementName(index)}"
         )
     }
 
@@ -76,9 +80,9 @@ internal class BencodeDecoder0(private val lexer: Lexer, override val serializer
     override fun decodeBoolean(): Boolean = unsupported("boolean")
     override fun decodeByte(): Byte = decodeInt().toByte()
     override fun decodeChar(): Char = decodeInt().toChar()
-    override fun decodeDouble(): Double = unsupported("double")
+    override fun decodeDouble(): Double = options.doubleStrategy.decodeDouble()
     override fun decodeEnum(enumDescriptor: SerialDescriptor) = enumDescriptor.getElementIndex(decodeString())
-    override fun decodeFloat(): Float = unsupported("float")
+    override fun decodeFloat(): Float = options.floatStrategy.decodeFloat()
     override fun decodeInline(descriptor: SerialDescriptor): Decoder = this
     override fun decodeInt(): Int = lexer.nextInteger().toInt()
     override fun decodeLong(): Long = lexer.nextInteger()
