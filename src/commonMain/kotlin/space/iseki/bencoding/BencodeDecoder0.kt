@@ -35,6 +35,13 @@ internal class BencodeDecoder0(private val lexer: Lexer, override val serializer
     override fun decodeByteArrayElement(descriptor: SerialDescriptor, index: Int) =
         el(descriptor, index, ::decodeByteArray)
 
+    override fun reportError(message: String, descriptor: SerialDescriptor, index: Int): Nothing {
+        throw BencodeDecodeException(
+            lexer.pos(),
+            "$message, at ${descriptor.serialName}/${descriptor.getElementName(index)}"
+        )
+    }
+
     override fun decodeByteElement(descriptor: SerialDescriptor, index: Int) = el(descriptor, index, ::decodeByte)
     override fun decodeCharElement(descriptor: SerialDescriptor, index: Int) = el(descriptor, index, ::decodeChar)
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int = m.d(descriptor)
@@ -80,6 +87,10 @@ internal class BencodeDecoder0(private val lexer: Lexer, override val serializer
     override fun decodeShort(): Short = decodeInt().toShort()
     override fun decodeString(): String = lexer.nextBytes().decodeToString()
     override fun decodeStringIso88591(): String = bytes2StringIso88591(lexer.nextBytes())
+    override fun reportError(message: String): Nothing {
+        throw BencodeDecodeException(lexer.pos(), message)
+    }
+
     override fun decodeByteArray(): ByteArray = lexer.nextBytes()
 
     @OptIn(ExperimentalSerializationApi::class)
