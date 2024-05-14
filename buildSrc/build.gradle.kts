@@ -9,8 +9,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0-RC1")
-    implementation("org.jetbrains.kotlin:kotlin-serialization:2.0.0-RC1")
+    val kotlinVersion = "1.9.23"
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion")
     implementation("org.jetbrains.kotlinx:kover-gradle-plugin:0.7.6")
     implementation("org.jetbrains.kotlinx:binary-compatibility-validator:0.14.0")
 }

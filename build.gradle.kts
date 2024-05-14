@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -18,58 +17,55 @@ allprojects {
 }
 
 dependencies {
+    commonMainImplementation(kotlin("stdlib"))
     commonMainApi(libs.kotlinx.serialization.core)
+    commonTestImplementation(kotlin("test"))
     commonTestImplementation(libs.kotlinx.serialization.core)
 }
 
 kotlin {
-    jvmToolchain(22)
+    // The latest LTS
+    jvmToolchain(21)
     jvm {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class) compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
-            freeCompilerArgs.add("-Xjvm-default=all")
+        compilations.all {
+            compilerOptions.configure {
+                jvmTarget = JvmTarget.JVM_1_8
+                freeCompilerArgs.add("-Xjvm-default=all")
+            }
         }
         withJava()
     }
-    js {
-        browser {
-            webpackTask {
+    // Temporary disable JS target until Kotlin 2.0 release!
+//    js {
+//        browser {
+//            webpackTask {
 //                output.libraryTarget = "commonjs2"
-            }
-        }
-        binaries.executable()
-    }
+//            }
+//        }
+//        binaries.executable()
+//    }
     sourceSets {
         all {
             languageSettings {
 //                enableLanguageFeature("ContextReceivers")
             }
         }
-        val jsMain by getting {
-            dependencies {
-                implementation(kotlin("stdlib-js"))
-            }
-        }
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
-        val commonMain by getting {
-            dependencies {
-                implementation(kotlin("stdlib"))
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
+//        val jsMain by getting {
+//            dependencies {
+//                implementation(kotlin("stdlib-js"))
+//            }
+//        }
+//        val jsTest by getting {
+//            dependencies {
+//                implementation(kotlin("test-js"))
+//            }
+//        }
     }
 }
 
 tasks.withType<JavaCompile> {
-    targetCompatibility = "17"
-    sourceCompatibility = "17"
+    // Keep consistent with Kotlin options
+    targetCompatibility = "1.8"
+    sourceCompatibility = "1.8"
 }
 
