@@ -47,7 +47,7 @@ kotlin {
     sourceSets {
         all {
             languageSettings {
-//                enableLanguageFeature("ContextReceivers")
+                enableLanguageFeature("ContextReceivers")
             }
         }
 //        val jsMain by getting {
