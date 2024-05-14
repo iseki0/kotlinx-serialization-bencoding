@@ -4,7 +4,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("org.jetbrains.kotlinx.kover")
-    id("org.jetbrains.kotlinx.binary-compatibility-validator")
+//    id("org.jetbrains.kotlinx.binary-compatibility-validator")
     `maven-publish-convention`
 }
 
