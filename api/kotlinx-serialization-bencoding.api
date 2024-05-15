@@ -1,20 +1,44 @@
+public final class space/iseki/bencoding/ Bencode {
+	public static final fun Bencode (Lkotlin/jvm/functions/Function1;)Lspace/iseki/bencoding/Bencode;
+}
+
 public abstract interface class space/iseki/bencoding/Bencode : kotlinx/serialization/BinaryFormat {
 	public static final field Companion Lspace/iseki/bencoding/Bencode$Companion;
+	public fun decodeFromByteArray (Lkotlinx/serialization/DeserializationStrategy;[B)Ljava/lang/Object;
+	public fun encodeToByteArray (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)[B
+	public abstract fun getOptions ()Lspace/iseki/bencoding/BencodeOptions;
+	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 }
 
 public final class space/iseki/bencoding/Bencode$Companion : space/iseki/bencoding/Bencode {
-	public fun decodeFromByteArray (Lkotlinx/serialization/DeserializationStrategy;[B)Ljava/lang/Object;
-	public fun encodeToByteArray (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)[B
-	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+	public fun getOptions ()Lspace/iseki/bencoding/BencodeOptions;
+}
+
+public final class space/iseki/bencoding/Bencode$DefaultImpls {
+	public static fun decodeFromByteArray (Lspace/iseki/bencoding/Bencode;Lkotlinx/serialization/DeserializationStrategy;[B)Ljava/lang/Object;
+	public static fun encodeToByteArray (Lspace/iseki/bencoding/Bencode;Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)[B
+	public static fun getSerializersModule (Lspace/iseki/bencoding/Bencode;)Lkotlinx/serialization/modules/SerializersModule;
 }
 
 public abstract interface class space/iseki/bencoding/BencodeCompositeDecoder : kotlinx/serialization/encoding/CompositeDecoder {
 	public abstract fun decodeByteArrayElement (Lkotlinx/serialization/descriptors/SerialDescriptor;I)[B
+	public abstract fun getOptions ()Lspace/iseki/bencoding/BencodeOptions;
+	public fun reportError (Ljava/lang/String;Lkotlinx/serialization/descriptors/SerialDescriptor;I)Ljava/lang/Void;
 }
 
 public final class space/iseki/bencoding/BencodeCompositeDecoder$DefaultImpls {
 	public static fun decodeCollectionSize (Lspace/iseki/bencoding/BencodeCompositeDecoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)I
 	public static fun decodeSequentially (Lspace/iseki/bencoding/BencodeCompositeDecoder;)Z
+	public static fun reportError (Lspace/iseki/bencoding/BencodeCompositeDecoder;Ljava/lang/String;Lkotlinx/serialization/descriptors/SerialDescriptor;I)Ljava/lang/Void;
+}
+
+public abstract interface class space/iseki/bencoding/BencodeConfigureScope {
+	public abstract fun getBinaryStringStrategy ()Lspace/iseki/bencoding/BinaryStringStrategy;
+	public abstract fun getDoubleStrategy ()Lspace/iseki/bencoding/FloatNumberStrategy;
+	public abstract fun getFloatStrategy ()Lspace/iseki/bencoding/FloatNumberStrategy;
+	public abstract fun setBinaryStringStrategy (Lspace/iseki/bencoding/BinaryStringStrategy;)V
+	public abstract fun setDoubleStrategy (Lspace/iseki/bencoding/FloatNumberStrategy;)V
+	public abstract fun setFloatStrategy (Lspace/iseki/bencoding/FloatNumberStrategy;)V
 }
 
 public final class space/iseki/bencoding/BencodeDecodeException : kotlinx/serialization/SerializationException {
@@ -28,23 +52,62 @@ public final class space/iseki/bencoding/BencodeDecodeException$Companion {
 }
 
 public abstract interface class space/iseki/bencoding/BencodeDecoder : kotlinx/serialization/encoding/Decoder {
+	public abstract fun decodeBinaryString (Lspace/iseki/bencoding/BinaryStringStrategy;)Ljava/lang/String;
 	public abstract fun decodeByteArray ()[B
-	public abstract fun decodeStringIso88591 ()Ljava/lang/String;
+	public abstract fun getOptions ()Lspace/iseki/bencoding/BencodeOptions;
+	public fun reportError (Ljava/lang/String;)Ljava/lang/Void;
 }
 
 public final class space/iseki/bencoding/BencodeDecoder$DefaultImpls {
 	public static fun decodeNullableSerializableValue (Lspace/iseki/bencoding/BencodeDecoder;Lkotlinx/serialization/DeserializationStrategy;)Ljava/lang/Object;
 	public static fun decodeSerializableValue (Lspace/iseki/bencoding/BencodeDecoder;Lkotlinx/serialization/DeserializationStrategy;)Ljava/lang/Object;
+	public static fun reportError (Lspace/iseki/bencoding/BencodeDecoder;Ljava/lang/String;)Ljava/lang/Void;
+}
+
+public final class space/iseki/bencoding/BencodeEncodeException : kotlinx/serialization/SerializationException {
+	public static final field Companion Lspace/iseki/bencoding/BencodeEncodeException$Companion;
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class space/iseki/bencoding/BencodeEncodeException$Companion {
+}
+
+public abstract interface class space/iseki/bencoding/BencodeOptions {
+	public abstract fun getBinaryStringStrategy ()Lspace/iseki/bencoding/BinaryStringStrategy;
+	public abstract fun getDoubleStrategy ()Lspace/iseki/bencoding/FloatNumberStrategy;
+	public abstract fun getFloatStrategy ()Lspace/iseki/bencoding/FloatNumberStrategy;
 }
 
 public final class space/iseki/bencoding/BencodingJVM {
 	public static final fun decodeFromStream (Lspace/iseki/bencoding/Bencode;Ljava/io/InputStream;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 }
 
-public abstract interface annotation class space/iseki/bencoding/StringInIso88591 : java/lang/annotation/Annotation {
+public abstract interface annotation class space/iseki/bencoding/BinaryString : java/lang/annotation/Annotation {
+	public abstract fun strategy ()Lspace/iseki/bencoding/BinaryStringStrategy;
 }
 
-public synthetic class space/iseki/bencoding/StringInIso88591$Impl : space/iseki/bencoding/StringInIso88591 {
-	public fun <init> ()V
+public synthetic class space/iseki/bencoding/BinaryString$Impl : space/iseki/bencoding/BinaryString {
+	public fun <init> (Lspace/iseki/bencoding/BinaryStringStrategy;)V
+	public synthetic fun <init> (Lspace/iseki/bencoding/BinaryStringStrategy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final synthetic fun strategy ()Lspace/iseki/bencoding/BinaryStringStrategy;
+}
+
+public final class space/iseki/bencoding/BinaryStringStrategy : java/lang/Enum {
+	public static final field Base64 Lspace/iseki/bencoding/BinaryStringStrategy;
+	public static final field Default Lspace/iseki/bencoding/BinaryStringStrategy;
+	public static final field ISO88591 Lspace/iseki/bencoding/BinaryStringStrategy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lspace/iseki/bencoding/BinaryStringStrategy;
+	public static fun values ()[Lspace/iseki/bencoding/BinaryStringStrategy;
+}
+
+public final class space/iseki/bencoding/FloatNumberStrategy : java/lang/Enum {
+	public static final field DecimalString Lspace/iseki/bencoding/FloatNumberStrategy;
+	public static final field Disallow Lspace/iseki/bencoding/FloatNumberStrategy;
+	public static final field IntegerIEEE754 Lspace/iseki/bencoding/FloatNumberStrategy;
+	public static final field Rounded Lspace/iseki/bencoding/FloatNumberStrategy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lspace/iseki/bencoding/FloatNumberStrategy;
+	public static fun values ()[Lspace/iseki/bencoding/FloatNumberStrategy;
 }
 
