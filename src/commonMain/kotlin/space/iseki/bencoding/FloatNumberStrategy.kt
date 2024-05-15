@@ -37,7 +37,7 @@ enum class FloatNumberStrategy {
             Disallow -> reportError("Double number is not allowed")
             Rounded -> decodeLong().toDouble()
             IntegerIEEE754 -> Double.fromBits(decodeLong())
-            DecimalString -> decodeStringIso88591().toDouble()
+            DecimalString -> decodeString().toDouble()
         }
     }
 
@@ -57,7 +57,7 @@ enum class FloatNumberStrategy {
             Disallow -> reportError("Float number is not allowed")
             Rounded -> decodeLong().toFloat()
             IntegerIEEE754 -> Float.fromBits(decodeInt())
-            DecimalString -> decodeStringIso88591().toFloat()
+            DecimalString -> decodeString().toFloat()
         }
     }
 
