@@ -10,7 +10,9 @@ import kotlinx.serialization.modules.SerializersModule
 
 @OptIn(ExperimentalSerializationApi::class)
 internal class BencodeDecoder0(
-    private val lexer: Lexer, override val serializersModule: SerializersModule, val options: BencodeOptions
+    private val lexer: Lexer,
+    override val serializersModule: SerializersModule,
+    override val options: BencodeOptions,
 ) : BencodeDecoder, BencodeCompositeDecoder {
 
     private fun unsupported(kind: String): Nothing = throw BencodeDecodeException(
@@ -68,8 +70,9 @@ internal class BencodeDecoder0(
 
     override fun decodeShortElement(descriptor: SerialDescriptor, index: Int) = el(descriptor, index, ::decodeShort)
     override fun decodeStringElement(descriptor: SerialDescriptor, index: Int) = el(descriptor, index) {
-        if (descriptor.getElementAnnotations(index).any { it is StringInIso88591 }) {
-            decodeStringIso88591()
+        val anno = descriptor.binaryStringAnnotation(index)
+        if (anno != null) {
+            decodeBinaryString(anno.strategy)
         } else {
             decodeString()
         }
@@ -90,7 +93,8 @@ internal class BencodeDecoder0(
     override fun decodeNull(): Nothing? = null
     override fun decodeShort(): Short = decodeInt().toShort()
     override fun decodeString(): String = lexer.nextBytes().decodeToString()
-    override fun decodeStringIso88591(): String = bytes2StringIso88591(lexer.nextBytes())
+    override fun decodeBinaryString(strategy: BinaryStringStrategy): String =
+        options.binaryStringStrategy.decodeString(strategy)
     override fun reportError(message: String): Nothing {
         throw BencodeDecodeException(lexer.pos(), message)
     }

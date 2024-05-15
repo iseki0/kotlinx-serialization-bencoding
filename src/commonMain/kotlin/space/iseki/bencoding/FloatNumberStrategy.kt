@@ -28,8 +28,7 @@ enum class FloatNumberStrategy {
     /**
      * Allow the [Double] and [Float] number, but convert them to decimal-string when encoding/decoding.
      */
-    DecimalString,
-    ;
+    DecimalString, ;
 
     context(BencodeDecoder)
     internal fun decodeDouble(): Double {
@@ -71,3 +70,4 @@ enum class FloatNumberStrategy {
         }
     }
 }
+

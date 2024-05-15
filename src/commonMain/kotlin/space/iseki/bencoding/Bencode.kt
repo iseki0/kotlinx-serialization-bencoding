@@ -23,28 +23,28 @@ interface Bencode : BinaryFormat {
 
 
     companion object : Bencode {
-        private val defaultOptions = BencodeOptionsData()
+        private val defaultOptions = BencodeConfigureScope0().build()
         override val options: BencodeOptions
             get() = defaultOptions
     }
 
 }
 
-fun Bencode(configure: BencodeConfigureScope.() -> Unit): Bencode {
-    val scope = object : BencodeConfigureScope {
-        override var floatStrategy: FloatNumberStrategy = FloatNumberStrategy.Disallow
-        override var doubleStrategy: FloatNumberStrategy = FloatNumberStrategy.Disallow
-    }
-    scope.configure()
-    return object : Bencode {
-        override val options: BencodeOptions = BencodeOptionsData(scope.floatStrategy, scope.doubleStrategy)
-    }
+fun Bencode(configure: BencodeConfigureScope.() -> Unit): Bencode = object : Bencode {
+    override val options: BencodeOptions = BencodeConfigureScope0().apply(configure).build()
 }
 
 
 interface BencodeConfigureScope {
     var floatStrategy: FloatNumberStrategy
     var doubleStrategy: FloatNumberStrategy
+    var binaryStringStrategy: BinaryStringStrategy
 }
 
+private class BencodeConfigureScope0 : BencodeConfigureScope {
+    override var floatStrategy: FloatNumberStrategy = FloatNumberStrategy.Disallow
+    override var doubleStrategy: FloatNumberStrategy = FloatNumberStrategy.Disallow
+    override var binaryStringStrategy: BinaryStringStrategy = BinaryStringStrategy.ISO88591
+    fun build() = BencodeOptionsData(floatStrategy, doubleStrategy, binaryStringStrategy)
+}
 
