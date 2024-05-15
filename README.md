@@ -12,7 +12,7 @@ Add the dependency to your `build.gradle.kts`
 
 ```kotlin
 dependencies {
-    implementation("space.iseki.bencoding:kotlinx-serialization-bencoding:0.1.+")
+  implementation("space.iseki.bencoding:kotlinx-serialization-bencoding:0.2.+")
 }
 ```
 
