@@ -1,21 +1,10 @@
 package space.iseki.bencoding
 
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromByteArray
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.serialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlin.collections.contentEquals
-import kotlin.collections.contentHashCode
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.js.ExperimentalJsExport
-import kotlin.js.JsExport
-import kotlin.let
-import kotlin.test.Test
 
 @OptIn(ExperimentalJsExport::class)
 @Serializable
@@ -28,29 +17,12 @@ data class Meta(
     data class Info(
         val name: String,
         @SerialName("piece length") val pieceLength: Int,
-        val pieces: Pieces,
-    )
-
-    @Serializable(Pieces.Serializer::class)
-    class Pieces(private val arr: ByteArray) {
-        override fun toString(): String = "Pieces(size=${arr.size / 20})"
-        override fun hashCode(): Int = arr.contentHashCode()
-        override fun equals(other: Any?): Boolean = (other as? Pieces)?.let { it.arr.contentEquals(arr) } ?: false
-
-        object Serializer : KSerializer<Pieces> {
-            override val descriptor: SerialDescriptor
-                get() = serialDescriptor<String>()
-
-            override fun deserialize(decoder: Decoder): Pieces =
-                (decoder as BencodeDecoder).decodeByteArray().let(::Pieces)
-
-            override fun serialize(encoder: Encoder, value: Pieces) {
-                TODO("Not yet implemented")
-            }
-
+        @BinaryString(BinaryStringStrategy.ISO88591) val pieces: String,
+    ) {
+        override fun toString(): String {
+            return "Info(name='$name', pieceLength=$pieceLength, pieces=(hash)${pieces.hashCode()})"
         }
     }
-
     companion object {
 
         @OptIn(ExperimentalEncodingApi::class)
