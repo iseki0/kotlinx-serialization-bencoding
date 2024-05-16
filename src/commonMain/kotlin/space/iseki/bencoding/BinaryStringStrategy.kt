@@ -26,11 +26,20 @@ enum class BinaryStringStrategy {
 
     context(BencodeDecoder)
     @OptIn(ExperimentalEncodingApi::class)
-    internal fun decodeString(strategy: BinaryStringStrategy): String {
-        return when (if (strategy == Default) options.binaryStringStrategy else strategy) {
-            ISO88591, Default -> bytes2StringIso88591(decodeByteArray())
-            Base64 -> kotlin.io.encoding.Base64.encode(decodeByteArray())
-        }
-    }
+    internal fun decodeString(strategy: BinaryStringStrategy) = work(
+        strategy = strategy,
+        options = options,
+        iso88591 = { bytes2StringIso88591(decodeByteArray()) },
+        base64 = { kotlin.io.encoding.Base64.encode(decodeByteArray()) },
+    )
 
+    private inline fun <T> work(
+        strategy: BinaryStringStrategy,
+        options: BencodeOptions,
+        iso88591: () -> T,
+        base64: () -> T,
+    ): T = when (if (strategy == Default) options.binaryStringStrategy else strategy) {
+        ISO88591, Default -> iso88591()
+        Base64 -> base64()
+    }
 }
