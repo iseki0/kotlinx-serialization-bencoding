@@ -1,6 +1,7 @@
 package space.iseki.bencoding
 
 import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -18,4 +19,9 @@ class SampleTest {
         assertEquals(dataMapped, decoded)
     }
 
+    @Test
+    fun testEncode() {
+        val encoded = Bencode.encodeToByteArray(dataMapped)
+        assertEquals(data, encoded.decodeToString())
+    }
 }

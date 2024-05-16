@@ -1,6 +1,7 @@
 package space.iseki.bencoding
 
 import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,5 +21,20 @@ class MapLikeTest {
         val value = (0..100).associateBy { val k = "$it"; k }
         val decoded = Bencode.decodeFromByteArray<Map<String, Int>>(data.encodeToByteArray())
         assertEquals(value, decoded)
+    }
+
+    @Test
+    fun testEncode() {
+        val encoded = Bencode.encodeToByteArray(value)
+        assertEquals(data, encoded.decodeToString())
+    }
+
+    @Test
+    fun testManyEncode() {
+        val data = (0..11).associateBy { val k = "$it"; k }
+        val value = (0..11).map { "$it" }.sorted() // ordered
+            .joinToString("", prefix = "d", postfix = "e") { k -> "${k.length}:${k}i${k}e" }
+        val encoded = Bencode.encodeToByteArray(data)
+        assertEquals(value, encoded.decodeToString())
     }
 }

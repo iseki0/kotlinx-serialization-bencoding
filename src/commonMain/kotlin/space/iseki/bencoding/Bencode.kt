@@ -15,7 +15,9 @@ interface Bencode : BinaryFormat {
         BencodeDecoder0(BytesLexer(bytes), serializersModule, options).decodeSerializableValue(deserializer)
 
     override fun <T> encodeToByteArray(serializer: SerializationStrategy<T>, value: T): ByteArray {
-        TODO("Not yet implemented")
+        val writer = createBytesWriter()
+        BencodeEncoder0(serializersModule, options, writer).encodeSerializableValue(serializer, value)
+        return writer.getByteArray()
     }
 
     override val serializersModule: SerializersModule

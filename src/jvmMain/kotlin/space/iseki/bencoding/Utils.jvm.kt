@@ -10,11 +10,11 @@ internal actual fun string2BytesIso88591(s: String): ByteArray = s.toByteArray(S
 
 internal actual fun createBytesWriter(): BWriter = object : BWriter {
     private val bytes = ByteArrayOutputStream()
-    override fun writeByte(b: Int) {
+    override fun writeData(b: Int) {
         bytes.write(b)
     }
 
-    override fun writeBytes(b: ByteArray) {
+    override fun writeData(b: ByteArray) {
         bytes.writeBytes(b)
     }
 

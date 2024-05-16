@@ -2,9 +2,11 @@ package space.iseki.bencoding
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class BinaryStringTest {
@@ -46,14 +48,30 @@ class BinaryStringTest {
     fun testDefault() {
         assertEquals(binaryA, Bencode.decodeFromByteArray<A>(data))
         assertEquals(
-            base64A,
-            Bencode { binaryStringStrategy = BinaryStringStrategy.Base64 }.decodeFromByteArray<A>(data)
+            expected = base64A,
+            actual = Bencode { binaryStringStrategy = BinaryStringStrategy.Base64 }.decodeFromByteArray<A>(data),
         )
     }
 
     @Test
-    fun testNonDefault(){
+    fun testNonDefault() {
         assertEquals(binaryB, Bencode.decodeFromByteArray<B>(data))
         assertEquals(base64C, Bencode.decodeFromByteArray<C>(data))
     }
+
+    @Test
+    fun testEncodeDefault() {
+        assertContentEquals(data, Bencode.encodeToByteArray(binaryA))
+        assertContentEquals(
+            expected = data,
+            actual = Bencode { binaryStringStrategy = BinaryStringStrategy.Base64 }.encodeToByteArray(base64A),
+        )
+    }
+
+    @Test
+    fun testEncodeNonDefault() {
+        assertContentEquals(data, Bencode.encodeToByteArray(binaryB))
+        assertContentEquals(data, Bencode.encodeToByteArray(base64C))
+    }
 }
+

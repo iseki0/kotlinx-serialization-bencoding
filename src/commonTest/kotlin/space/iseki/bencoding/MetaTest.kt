@@ -1,5 +1,7 @@
 package space.iseki.bencoding
 
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -21,5 +23,14 @@ class MetaTest {
         println(meta.info.pieces.length)
         println(meta)
         assertEquals(0, meta.info.pieces.length % 20)
+    }
+
+    @Test
+    @OptIn(ExperimentalStdlibApi::class)
+    fun encodeTest() {
+        val decodedMeta = Bencode.decodeFromByteArray(Meta.serializer(), Meta.sampleTorrent)
+        val r = Bencode.encodeToByteArray(decodedMeta)
+        println(r.toHexString())
+        assertEquals(decodedMeta, Bencode.decodeFromByteArray<Meta>(r))
     }
 }
