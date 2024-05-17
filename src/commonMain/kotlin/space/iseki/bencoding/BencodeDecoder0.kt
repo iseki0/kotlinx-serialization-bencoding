@@ -178,7 +178,10 @@ internal class BencodeDecoder0(
                     stack[++sp] = OBJ_IDLE
                 }
 
-                else -> error("unsupported kind: $kind")
+                else -> throw BencodeDecodeException(
+                    lexer.pos(),
+                    "unsupported structured descriptor: ${d.serialName}, kind: $kind"
+                )
             }
         }
 
