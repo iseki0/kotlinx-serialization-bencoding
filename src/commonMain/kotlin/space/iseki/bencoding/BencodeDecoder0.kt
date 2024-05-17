@@ -95,6 +95,7 @@ internal class BencodeDecoder0(
     override fun decodeString(): String = lexer.nextBytes().decodeToString()
     override fun decodeBinaryString(strategy: BinaryStringStrategy): String =
         options.binaryStringStrategy.decodeString(strategy)
+
     override fun reportError(message: String): Nothing {
         throw BencodeDecodeException(lexer.pos(), message)
     }
