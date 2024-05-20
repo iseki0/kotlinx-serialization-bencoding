@@ -2,8 +2,6 @@
 
 A Kotlin serialization codec for bencoding format. (Bittorrent)
 
-🚧Note: Currently only decoder was implemented.🚧
-
 Reference: [https://www.bittorrent.org/beps/bep_0003.html](https://www.bittorrent.org/beps/bep_0003.html)
 
 ## Usage
