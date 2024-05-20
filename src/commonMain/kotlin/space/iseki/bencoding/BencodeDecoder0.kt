@@ -29,7 +29,7 @@ internal class BencodeDecoder0(
         return f()
     }
 
-    private val m = M(lexer)
+    private val m = M()
     override fun decodeBooleanElement(descriptor: SerialDescriptor, index: Int): Boolean =
         unsupported(descriptor, index)
 
@@ -102,42 +102,65 @@ internal class BencodeDecoder0(
 
     override fun decodeByteArray(): ByteArray = lexer.nextBytes()
 
+    companion object {
+        // Base constants used for bit shifting
+        private const val C_READ = 1
+        private const val T_LIST = 1 shl 1
+        private const val T_MAP_KEY = 1 shl 2
+        private const val T_MAP_VAL = 1 shl 3
+        private const val T_OBJ = 1 shl 4
+
+        // LIST related constants
+        const val LIST_IDLE = T_LIST
+        const val LIST_READ = T_LIST or C_READ
+
+        // MAP_KEY related constants
+        const val MAP_KEY_IDLE = T_MAP_KEY
+        const val MAP_KEY_READ = T_MAP_KEY or C_READ
+
+        // MAP_VAL related constants
+        const val MAP_VAL_IDLE = T_MAP_VAL
+        const val MAP_VAL_READ = T_MAP_VAL or C_READ
+
+        // OBJ related constants
+        const val OBJ_IDLE = T_OBJ
+        const val OBJ_READ = T_OBJ or C_READ
+
+    }
+
+
     @OptIn(ExperimentalSerializationApi::class)
-    private class M(val lexer: Lexer) {
+    private inner class M {
 
-        companion object {
-            // Base constants used for bit shifting
-            private const val C_READ = 1
-            private const val T_LIST = 1 shl 1
-            private const val T_MAP_KEY = 1 shl 2
-            private const val T_MAP_VAL = 1 shl 3
-            private const val T_OBJ = 1 shl 4
-            private const val C_NEG = 1 shl 31
-
-            // LIST related constants
-            const val LIST_IDLE = C_NEG or T_LIST
-            const val LIST_READ = C_NEG or T_LIST or C_READ
-
-            // MAP_KEY related constants
-            const val MAP_KEY_IDLE = C_NEG or T_MAP_KEY
-            const val MAP_KEY_READ = C_NEG or T_MAP_KEY or C_READ
-
-            // MAP_VAL related constants
-            const val MAP_VAL_IDLE = C_NEG or T_MAP_VAL
-            const val MAP_VAL_READ = C_NEG or T_MAP_VAL or C_READ
-
-            // OBJ related constants
-            const val OBJ_IDLE = C_NEG or T_OBJ
-
-        }
-
-        // when OBJ_READ, the stack top is the decoded element index
-        private var stack = IntArray(0)
+        private var stack = LongArray(0)
         private var sp = -1
         private fun ensureMoreSpace() {
             if (sp + 1 == stack.size) {
-                stack = stack.copyInto(IntArray(stack.size.coerceAtLeast(2) * 2))
+                stack = stack.copyInto(LongArray(stack.size.coerceAtLeast(2) * 2))
             }
+        }
+
+        private fun currIndex(): Int {
+            val s = stack[sp]
+            return s.toInt()
+        }
+
+        private fun currState(): Int {
+            val s = stack[sp]
+            return (s ushr 32).toInt()
+        }
+
+        private fun setIndex(index: Int) {
+            stack[sp] = index.toLong() and 0xFFFFFFFFL or (stack[sp] and (0xffffffffL shl 32))
+        }
+
+        private fun setState(state: Int) {
+            stack[sp] = (state.toLong() shl 32) or (stack[sp] and 0xFFFFFFFFL)
+        }
+
+        private fun pushState(state: Int) {
+            ensureMoreSpace()
+            stack[++sp] = state.toLong() shl 32
         }
 
         private fun laExpect(t: Int) {
@@ -161,27 +184,24 @@ internal class BencodeDecoder0(
         }
 
         fun begin(d: SerialDescriptor) {
-            ensureMoreSpace()
             when (val kind = d.kind) {
                 StructureKind.LIST -> {
                     consumeExpect(Lexer.LIST)
-                    stack[++sp] = LIST_IDLE
+                    pushState(LIST_IDLE)
+                    setIndex(-1)
                 }
 
                 StructureKind.MAP -> {
                     consumeExpect(Lexer.DICT)
-                    stack[++sp] = MAP_KEY_IDLE
+                    pushState(MAP_KEY_IDLE)
                 }
 
                 StructureKind.CLASS, StructureKind.OBJECT -> {
                     consumeExpect(Lexer.DICT)
-                    stack[++sp] = OBJ_IDLE
+                    pushState(OBJ_IDLE)
                 }
 
-                else -> throw BencodeDecodeException(
-                    lexer.pos(),
-                    "unsupported structured descriptor: ${d.serialName}, kind: $kind"
-                )
+                else -> reportError("unsupported structured descriptor: ${d.serialName}, kind: $kind")
             }
         }
 
@@ -195,16 +215,9 @@ internal class BencodeDecoder0(
         }
 
         fun g(sd: SerialDescriptor, i: Int) {
-            val s = stack[sp]
-            if (s >= 0) {
-                check(s == i) { "bad index: $i, expect: $s" }
-                stack[sp] = OBJ_IDLE
-            } else {
-                if (s and C_READ == 0) {
-                    error("call decodeElementIndex before decode*")
-                }
-                stack[sp] = postReadStateOf(stack[sp])
-            }
+            if (currState() and C_READ == 0) reportError("not in read state", sd, i)
+            if (currIndex() != i) reportError("bad index: $i, expect: ${currIndex()}", sd, i)
+            setState(postReadStateOf(currState()))
         }
 
         private fun postReadStateOf(old: Int): Int {
@@ -217,17 +230,18 @@ internal class BencodeDecoder0(
         }
 
         private fun goAround(sd: SerialDescriptor, state: Int): Int {
-            stack[sp] = state
+            setState(state)
             return d(sd)
         }
 
         fun d(sd: SerialDescriptor): Int {
-            when (val s = stack[sp]) {
+            when (val s = currState()) {
                 LIST_IDLE -> {
                     if (lexer.la() == Lexer.END) return CompositeDecoder.DECODE_DONE
                     laUnexpect(Lexer.EOF)
-                    stack[sp] = LIST_READ
-                    return 0
+                    setState(LIST_READ)
+                    setIndex(currIndex() + 1)
+                    return currIndex()
                 }
 
                 LIST_READ -> {
@@ -238,8 +252,9 @@ internal class BencodeDecoder0(
                 MAP_KEY_IDLE -> {
                     if (lexer.la() == Lexer.END) return CompositeDecoder.DECODE_DONE
                     laExpect(Lexer.STRING)
-                    stack[sp] = MAP_KEY_READ
-                    return 0
+                    setState(MAP_KEY_READ)
+                    setIndex(currIndex() + 1)
+                    return currIndex()
                 }
 
                 MAP_KEY_READ -> {
@@ -251,8 +266,9 @@ internal class BencodeDecoder0(
                 MAP_VAL_IDLE -> {
                     laUnexpect(Lexer.END)
                     laUnexpect(Lexer.EOF)
-                    stack[sp] = MAP_VAL_READ
-                    return 1
+                    setState(MAP_VAL_READ)
+                    setIndex(currIndex() + 1)
+                    return currIndex()
                 }
 
                 MAP_VAL_READ -> {
@@ -269,7 +285,8 @@ internal class BencodeDecoder0(
                             lexer.skipValue()
                             continue
                         }
-                        stack[sp] = index
+                        setIndex(index)
+                        setState(OBJ_READ)
                         return index
                     }
                 }
