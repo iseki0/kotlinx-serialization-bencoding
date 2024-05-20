@@ -7,6 +7,8 @@ internal interface BWriter {
         writeByte('e'.code)
     }
 
+    fun getByteArray(): ByteArray = throw UnsupportedOperationException("Not implemented")
+
     fun writeDictBegin() {
         writeByte('d'.code)
     }

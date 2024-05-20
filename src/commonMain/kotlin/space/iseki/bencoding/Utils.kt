@@ -12,3 +12,5 @@ internal expect fun string2BytesIso88591(s: String): ByteArray
 @OptIn(ExperimentalSerializationApi::class)
 internal fun SerialDescriptor.binaryStringAnnotation(childIndex: Int) =
     getElementAnnotations(childIndex).firstOrNull { it is BinaryString } as BinaryString?
+
+internal expect fun createBytesWriter(): BWriter
