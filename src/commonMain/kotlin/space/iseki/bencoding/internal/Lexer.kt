@@ -1,4 +1,6 @@
-package space.iseki.bencoding
+package space.iseki.bencoding.internal
+
+import space.iseki.bencoding.BencodeDecodeException
 
 internal interface Lexer {
     companion object {

@@ -6,9 +6,3 @@ interface BencodeOptions {
     val binaryStringStrategy: BinaryStringStrategy
 }
 
-internal data class BencodeOptionsData(
-    override val floatStrategy: FloatNumberStrategy,
-    override val doubleStrategy: FloatNumberStrategy,
-    override val binaryStringStrategy: BinaryStringStrategy,
-) : BencodeOptions
-

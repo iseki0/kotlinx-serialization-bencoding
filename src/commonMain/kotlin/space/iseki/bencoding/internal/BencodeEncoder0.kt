@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencoding.internal
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -6,6 +6,8 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.modules.SerializersModule
+import space.iseki.bencoding.BencodeEncoder
+import space.iseki.bencoding.BencodeOptions
 
 @OptIn(ExperimentalSerializationApi::class)
 internal class BencodeEncoder0(

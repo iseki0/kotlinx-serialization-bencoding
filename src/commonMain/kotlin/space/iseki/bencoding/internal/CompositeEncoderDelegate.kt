@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencoding.internal
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy
@@ -6,6 +6,10 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.modules.SerializersModule
+import space.iseki.bencoding.BencodeCompositeEncoder
+import space.iseki.bencoding.BencodeEncoder
+import space.iseki.bencoding.BencodeOptions
+import space.iseki.bencoding.BinaryStringStrategy
 
 internal interface CompositeEncoderDelegate : BencodeCompositeEncoder {
     val rootRef: BencodeEncoder

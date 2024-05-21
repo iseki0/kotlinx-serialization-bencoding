@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencoding.internal
 
 
 internal class BytesLexer(private val bytes: ByteArray) : CommonLexer() {

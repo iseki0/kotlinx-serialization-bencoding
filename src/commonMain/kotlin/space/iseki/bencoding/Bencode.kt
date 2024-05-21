@@ -7,6 +7,11 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import space.iseki.bencoding.internal.BencodeDecoder0
+import space.iseki.bencoding.internal.BencodeEncoder0
+import space.iseki.bencoding.internal.BencodeOptionsData
+import space.iseki.bencoding.internal.BytesLexer
+import space.iseki.bencoding.internal.createBytesWriter
 
 interface Bencode : BinaryFormat {
     val options: BencodeOptions

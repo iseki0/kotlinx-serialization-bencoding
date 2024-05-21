@@ -1,6 +1,8 @@
 package space.iseki.bencoding
 
 import kotlinx.serialization.descriptors.SerialDescriptor
+import space.iseki.bencoding.internal.bytes2StringIso88591
+import space.iseki.bencoding.internal.string2BytesIso88591
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**

@@ -106,10 +106,6 @@ public abstract interface class space/iseki/bencoding/BencodeOptions {
 	public abstract fun getFloatStrategy ()Lspace/iseki/bencoding/FloatNumberStrategy;
 }
 
-public final class space/iseki/bencoding/BencodingJVM {
-	public static final fun decodeFromStream (Lspace/iseki/bencoding/Bencode;Ljava/io/InputStream;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
-}
-
 public abstract interface annotation class space/iseki/bencoding/BinaryString : java/lang/annotation/Annotation {
 	public abstract fun strategy ()Lspace/iseki/bencoding/BinaryStringStrategy;
 }
@@ -137,5 +133,9 @@ public final class space/iseki/bencoding/FloatNumberStrategy : java/lang/Enum {
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lspace/iseki/bencoding/FloatNumberStrategy;
 	public static fun values ()[Lspace/iseki/bencoding/FloatNumberStrategy;
+}
+
+public final class space/iseki/bencoding/internal/BencodingJVM {
+	public static final fun decodeFromStream (Lspace/iseki/bencoding/Bencode;Ljava/io/InputStream;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 }
 

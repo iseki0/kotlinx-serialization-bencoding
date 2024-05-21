@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencoding.internal
 
 import java.io.BufferedInputStream
 import java.io.EOFException

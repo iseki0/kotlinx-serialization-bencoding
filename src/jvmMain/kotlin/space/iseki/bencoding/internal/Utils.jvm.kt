@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencoding.internal
 
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets

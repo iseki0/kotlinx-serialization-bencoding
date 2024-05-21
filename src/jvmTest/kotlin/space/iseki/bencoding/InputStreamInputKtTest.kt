@@ -1,6 +1,7 @@
 package space.iseki.bencoding
 
 import kotlinx.serialization.decodeFromByteArray
+import space.iseki.bencoding.internal.decodeFromStream
 import kotlin.test.assertEquals
 
 private val data = Meta.sampleTorrent

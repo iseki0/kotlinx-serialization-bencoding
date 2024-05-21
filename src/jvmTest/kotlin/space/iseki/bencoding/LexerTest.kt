@@ -1,6 +1,8 @@
 package space.iseki.bencoding
 
 import org.junit.Test
+import space.iseki.bencoding.internal.InputStreamLexer
+import space.iseki.bencoding.internal.Lexer
 
 class InputStreamLexerTest{
 

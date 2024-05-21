@@ -1,4 +1,6 @@
-package space.iseki.bencoding
+package space.iseki.bencoding.internal
+
+import space.iseki.bencoding.BencodeDecodeException
 
 internal abstract class CommonLexer : Lexer {
     private fun unexpected(expected: Int, actual: Int): Nothing {

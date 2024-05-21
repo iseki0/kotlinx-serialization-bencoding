@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencoding.internal
 
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.encoding.Encoder

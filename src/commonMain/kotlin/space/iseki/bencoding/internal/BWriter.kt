@@ -1,4 +1,4 @@
-package space.iseki.bencoding
+package space.iseki.bencoding.internal
 
 internal interface BWriter {
     fun writeData(b: Int)
