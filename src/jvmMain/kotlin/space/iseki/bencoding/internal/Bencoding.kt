@@ -12,4 +12,9 @@ fun <T> Bencode.decodeFromStream(input: InputStream, serializer: KSerializer<T>)
 
 inline fun <reified T> Bencode.decodeFromStream(input: InputStream) = decodeFromStream(input, serializer<T>())
 
+fun <T> Bencode.encodeToStream(value: T, serializer: KSerializer<T>, output: java.io.OutputStream) {
+    BencodeEncoder0(serializersModule, options, OutputStreamWriter(output)).encodeSerializableValue(serializer, value)
+}
 
+inline fun <reified T> Bencode.encodeToStream(value: T, output: java.io.OutputStream) =
+    encodeToStream(value, serializer<T>(), output)

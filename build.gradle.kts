@@ -21,6 +21,7 @@ dependencies {
     commonMainApi(libs.kotlinx.serialization.core)
     commonTestImplementation(kotlin("test"))
     commonTestImplementation(libs.kotlinx.serialization.core)
+    commonTestImplementation(libs.kotlinx.serialization.json)
 }
 
 kotlin {
