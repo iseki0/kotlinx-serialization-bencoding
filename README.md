@@ -1,5 +1,9 @@
 # kotlinx-serialization-bencode
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/iseki0/kotlinx-serialization-bencoding/build.yml)
+[![Maven Central Version](https://img.shields.io/maven-central/v/space.iseki.bencoding/kotlinx-serialization-bencoding)](https://central.sonatype.com/artifact/space.iseki.bencoding/kotlinx-serialization-bencoding)
+![License](https://img.shields.io/github/license/iseki0/kotlinx-serialization-bencoding)
+
 A Kotlin serialization codec for bencoding format. (Bittorrent)
 
 Reference: [https://www.bittorrent.org/beps/bep_0003.html](https://www.bittorrent.org/beps/bep_0003.html)
