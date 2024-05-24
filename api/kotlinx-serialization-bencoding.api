@@ -137,5 +137,6 @@ public final class space/iseki/bencoding/FloatNumberStrategy : java/lang/Enum {
 
 public final class space/iseki/bencoding/internal/BencodingJVM {
 	public static final fun decodeFromStream (Lspace/iseki/bencoding/Bencode;Ljava/io/InputStream;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun encodeToStream (Lspace/iseki/bencoding/Bencode;Ljava/lang/Object;Lkotlinx/serialization/KSerializer;Ljava/io/OutputStream;)V
 }
 
