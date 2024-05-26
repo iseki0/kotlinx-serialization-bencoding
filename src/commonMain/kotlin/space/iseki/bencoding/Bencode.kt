@@ -12,6 +12,7 @@ import space.iseki.bencoding.internal.BencodeEncoder0
 import space.iseki.bencoding.internal.BencodeOptionsData
 import space.iseki.bencoding.internal.BytesLexer
 import space.iseki.bencoding.internal.createBytesWriter
+import kotlin.jvm.JvmName
 
 interface Bencode : BinaryFormat {
     val options: BencodeOptions
@@ -51,7 +52,7 @@ interface BencodeConfigureScope {
 private class BencodeConfigureScope0 : BencodeConfigureScope {
     override var floatStrategy: FloatNumberStrategy = FloatNumberStrategy.Disallow
     override var doubleStrategy: FloatNumberStrategy = FloatNumberStrategy.Disallow
-    override var binaryStringStrategy: BinaryStringStrategy = BinaryStringStrategy.ISO88591
+    override var binaryStringStrategy: BinaryStringStrategy = BinaryStringStrategy.Default
     fun build() = BencodeOptionsData(floatStrategy, doubleStrategy, binaryStringStrategy)
 }
 

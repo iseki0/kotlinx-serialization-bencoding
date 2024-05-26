@@ -37,30 +37,36 @@ kotlin {
         withJava()
     }
     // Temporary disable JS target until Kotlin 2.0 release!
-//    js {
-//        browser {
-//            webpackTask {
-//                output.libraryTarget = "commonjs2"
-//            }
-//        }
-//        binaries.executable()
-//    }
+    js {
+        browser {
+            webpackTask {
+                output.libraryTarget = "commonjs2"
+            }
+        }
+        binaries.executable()
+    }
     sourceSets {
         all {
             languageSettings {
                 enableLanguageFeature("ContextReceivers")
             }
         }
-//        val jsMain by getting {
-//            dependencies {
-//                implementation(kotlin("stdlib-js"))
-//            }
-//        }
-//        val jsTest by getting {
-//            dependencies {
-//                implementation(kotlin("test-js"))
-//            }
-//        }
+        val jsMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib-js"))
+            }
+        }
+        val jsTest by getting {
+            dependencies {
+                implementation(kotlin("test-js"))
+            }
+        }
+    }
+}
+
+tasks.withType<Test> {
+    testLogging {
+        events("passed", "skipped", "failed")
     }
 }
 

@@ -226,7 +226,7 @@ internal class BencodeDecoder0(
         }
 
         private fun postReadStateOf(old: Int): Int {
-            assert(old and C_READ != 0)
+            check(old and C_READ != 0)
             return when (old) {
                 MAP_KEY_READ -> MAP_VAL_IDLE
                 MAP_VAL_READ -> MAP_KEY_IDLE

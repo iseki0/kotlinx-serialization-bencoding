@@ -3,6 +3,7 @@
 package space.iseki.bencoding
 
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlin.jvm.JvmName
 
 /**
  * Describe how to handle the [Double] and [Float] number, which is not supported in the bencoding standard.

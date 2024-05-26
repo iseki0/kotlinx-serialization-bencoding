@@ -9,6 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
+@Suppress("RUNTIME_ANNOTATION_NOT_SUPPORTED")
 class BinaryStringTest {
     @Serializable
     data class A(

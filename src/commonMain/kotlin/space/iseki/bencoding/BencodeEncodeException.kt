@@ -2,6 +2,7 @@ package space.iseki.bencoding
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlin.jvm.JvmStatic
 
 class BencodeEncodeException(reason: String) : SerializationException(messageOf(reason)) {
     companion object {

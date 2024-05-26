@@ -2,7 +2,6 @@ package space.iseki.bencoding
 
 import kotlinx.serialization.descriptors.SerialDescriptor
 import space.iseki.bencoding.internal.bytes2StringIso88591
-import space.iseki.bencoding.internal.string2BytesIso88591
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
@@ -15,6 +14,7 @@ enum class BinaryStringStrategy {
     /**
      * Use ISO-8859-1 to encode/decode the binary data.
      */
+    @Deprecated(message = "Use another name", replaceWith = ReplaceWith("Raw"))
     ISO88591,
 
     /**
@@ -25,15 +25,21 @@ enum class BinaryStringStrategy {
     /**
      * Use the default strategy that configured in the [BencodeOptions].
      */
-    Default, ;
+    Default,
+
+    /**
+     * Encode every [Byte] into [Char] directly, so all character must be in code point `0..255`.
+     */
+    Raw,
+    ;
 
     context(BencodeDecoder)
     @OptIn(ExperimentalEncodingApi::class)
     internal fun decodeString(strategy: BinaryStringStrategy) = work(
         strategy = strategy,
         options = options,
-        iso88591 = { bytes2StringIso88591(decodeByteArray()) },
         base64 = { kotlin.io.encoding.Base64.encode(decodeByteArray()) },
+        raw = { decodeRaw(decodeByteArray()) },
     )
 
     context(BencodeEncoder)
@@ -42,8 +48,8 @@ enum class BinaryStringStrategy {
         work(
             strategy = strategy,
             options = options,
-            iso88591 = { encodeByteArray(string2BytesIso88591(value)) },
             base64 = { encodeByteArray(kotlin.io.encoding.Base64.decode(value)) },
+            raw = { encodeByteArray(encodeRaw(value)) },
         )
     }
 
@@ -53,18 +59,41 @@ enum class BinaryStringStrategy {
         work(
             strategy = strategy,
             options = options,
-            iso88591 = { encodeByteArrayElement(descriptor, index, string2BytesIso88591(value)) },
             base64 = { encodeByteArrayElement(descriptor, index, kotlin.io.encoding.Base64.decode(value)) },
+            raw = { encodeByteArrayElement(descriptor, index, encodeRaw(value)) },
         )
     }
 
+    @Suppress("DEPRECATION")
     private inline fun <T> work(
         strategy: BinaryStringStrategy,
         options: BencodeOptions,
-        iso88591: () -> T,
         base64: () -> T,
+        raw: () -> T,
     ): T = when (if (strategy == Default) options.binaryStringStrategy else strategy) {
-        ISO88591, Default -> iso88591()
+        Raw, Default, ISO88591 -> raw()
         Base64 -> base64()
+    }
+
+    private fun encodeRaw(value: String): ByteArray {
+        val bytes = ByteArray(value.length)
+        for (i in value.indices) {
+            val c = value[i].code
+            if (c !in 0..255) throw IllegalArgumentException("Character at pos $i is not in 0..255")
+            bytes[i] = c.toByte()
+        }
+        return bytes
+    }
+
+    private fun decodeRaw(bytes: ByteArray): String {
+        return bytes2StringIso88591(bytes) ?: decodeRawFallback(bytes)
+    }
+
+    private fun decodeRawFallback(bytes: ByteArray): String {
+        val chars = CharArray(bytes.size)
+        for (i in bytes.indices) {
+            chars[i] = (bytes[i].toInt() and 0xff).toChar()
+        }
+        return chars.concatToString()
     }
 }

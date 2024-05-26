@@ -120,6 +120,7 @@ public final class space/iseki/bencoding/BinaryStringStrategy : java/lang/Enum {
 	public static final field Base64 Lspace/iseki/bencoding/BinaryStringStrategy;
 	public static final field Default Lspace/iseki/bencoding/BinaryStringStrategy;
 	public static final field ISO88591 Lspace/iseki/bencoding/BinaryStringStrategy;
+	public static final field Raw Lspace/iseki/bencoding/BinaryStringStrategy;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lspace/iseki/bencoding/BinaryStringStrategy;
 	public static fun values ()[Lspace/iseki/bencoding/BinaryStringStrategy;

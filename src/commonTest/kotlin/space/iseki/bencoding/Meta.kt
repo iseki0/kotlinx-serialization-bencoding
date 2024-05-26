@@ -4,9 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-import kotlin.js.ExperimentalJsExport
 
-@OptIn(ExperimentalJsExport::class)
 @Serializable
 data class Meta(
     val announce: String = "",
