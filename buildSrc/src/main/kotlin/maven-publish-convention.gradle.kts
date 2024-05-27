@@ -15,13 +15,16 @@ publishing {
     repositories {
         maven {
             name = "Central"
-            url = if (version.toString().endsWith("SNAPSHOT")) {
-                // uri("https://s01.oss.sonatype.org/content/repositories/snapshots")
-                uri("https://oss.sonatype.org/content/repositories/snapshots")
-            } else {
-                // uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
-                uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+            afterEvaluate {
+                url = if (version.toString().endsWith("SNAPSHOT")) {
+                    // uri("https://s01.oss.sonatype.org/content/repositories/snapshots")
+                    uri("https://oss.sonatype.org/content/repositories/snapshots")
+                } else {
+                    // uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
+                    uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+                }
             }
+
             credentials {
                 username = properties["ossrhUsername"]?.toString() ?: System.getenv("OSSRH_USERNAME")
                 password = properties["ossrhPassword"]?.toString() ?: System.getenv("OSSRH_PASSWORD")
