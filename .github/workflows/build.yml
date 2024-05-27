@@ -32,3 +32,12 @@ jobs:
       - name: Run build
         run: ./gradlew build --scan
 
+      - name: Store GPG key
+        run: echo "${{ secrets.GPG_PK }}" | base64 --decode | gpg --import
+
+      - name: Publish to Maven Central
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        run: ./gradlew publish -Psigning.gnupg.keyName=pub@iseki.space
+
