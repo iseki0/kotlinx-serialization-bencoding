@@ -50,6 +50,6 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         run: |
-          VERSION=${{ github.event.release.tag_name }}
+          VERSION=${{ github.ref_name }}
           ./gradlew publish -Psigning.gnupg.keyName=pub@iseki.space -Pversion=${VERSION:1}
           
