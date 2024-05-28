@@ -2,6 +2,9 @@ name: Build
 
 on:
   push:
+    tags:
+      - 'v0.*'
+      - 'v1.*'
     branches:
       - 'master'
 
@@ -35,8 +38,18 @@ jobs:
         run: echo "${{ secrets.GPG_PK }}" | base64 --decode | gpg --import
 
       - name: Publish to Maven Central
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         run: ./gradlew publish -Psigning.gnupg.keyName=pub@iseki.space
 
+      - name: Publish to Maven Central(Tagged)
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        run: |
+          VERSION=${{ github.event.release.tag_name }}
+          ./gradlew publish -Psigning.gnupg.keyName=pub@iseki.space -Pversion=${VERSION:1}
+          
