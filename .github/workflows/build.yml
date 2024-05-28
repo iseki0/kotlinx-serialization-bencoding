@@ -33,7 +33,7 @@ jobs:
           build-scan-terms-of-use-agree: "yes"
 
       - name: Run build
-        run: ./gradlew build --scan
+        run: ./gradlew build
 
       - name: Store GPG key
         run: echo "${{ secrets.GPG_PK }}" | base64 --decode | gpg --import
