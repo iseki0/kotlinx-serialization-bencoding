@@ -1,3 +1,4 @@
+import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -53,6 +54,24 @@ kotlin {
     }
 }
 
+java {
+    sourceSets {
+        val java9 by java.sourceSets.creating
+        val a by configurations.commonMainApi
+        configurations.getByName("jvmJava9Api").extendsFrom(a)
+    }
+}
+
+tasks.getByName("jvmJar", Jar::class) {
+    manifest {
+        attributes("Multi-Release" to "true")
+    }
+    into("META-INF/versions/9") {
+        val java9 by sourceSets.getting
+        from(java9.output)
+    }
+}
+
 tasks.withType<Test> {
     testLogging {
         events("passed", "skipped", "failed")
@@ -65,3 +84,7 @@ tasks.withType<JavaCompile> {
     sourceCompatibility = "1.8"
 }
 
+tasks.getByName("compileJava9Java", JavaCompile::class) {
+    targetCompatibility = "1.9"
+    sourceCompatibility = "1.9"
+}
