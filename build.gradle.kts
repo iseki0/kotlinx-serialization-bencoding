@@ -36,7 +36,6 @@ kotlin {
         }
         withJava()
     }
-    // Temporary disable JS target until Kotlin 2.0 release!
     js {
         browser {
             webpackTask {
