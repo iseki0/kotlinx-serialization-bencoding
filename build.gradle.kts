@@ -55,6 +55,9 @@ kotlin {
 }
 
 java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
     sourceSets {
         val java9 by java.sourceSets.creating
         val a by configurations.commonMainApi
