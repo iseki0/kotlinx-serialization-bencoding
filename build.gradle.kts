@@ -38,12 +38,7 @@ kotlin {
         withJava()
     }
     js {
-        browser {
-            webpackTask {
-                output.libraryTarget = "commonjs2"
-            }
-        }
-        binaries.executable()
+        browser()
     }
     sourceSets {
         all {
