@@ -1,7 +1,13 @@
 [versions]
+kotlin = "2.0.0"
+kotlinx-serialization-library = "1.5.1"
 [libraries]
 # Kotlinx Serialization
-kotlinx-serialization-core = "org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1"
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
-okio = "com.squareup.okio:okio:3.3.0"
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization-library" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-library" }
 [bundles]
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version = "0.7.6" }
+kotlinx-binary-compatibility-validator = "org.jetbrains.kotlinx.binary-compatibility-validator:0.14.0"
