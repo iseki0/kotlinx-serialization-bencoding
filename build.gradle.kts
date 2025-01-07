@@ -73,6 +73,10 @@ tasks.getByName("jvmJar", Jar::class) {
         val java9 by sourceSets.getting
         from(java9.output)
     }
+    into("/") {
+        from("/LICENSE")
+        from("/NOTICE")
+    }
 }
 
 tasks.withType<Test> {
