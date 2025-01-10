@@ -116,34 +116,42 @@ publishing {
     publications {
         withType<MavenPublication> {
             val pubName = name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else "$it" }
-            afterEvaluate {
-                val emptyJavadocJar by tasks.register<org.gradle.api.tasks.bundling.Jar>("emptyJavadocJar$pubName") {
-                    archiveClassifier = "javadoc"
-                    archiveBaseName = artifactId
-                }
-                artifact(emptyJavadocJar)
+            val emptyJavadocJar by tasks.register<Jar>("emptyJavadocJar$pubName") {
+                archiveClassifier = "javadoc"
+                archiveBaseName = artifactId
             }
+            artifact(emptyJavadocJar)
             pom {
-                name.set("kotlinx-serialization-bencoding")
-                description.set("A Kotlin serialization codec for bencoding format.")
-                url.set("https://github.com/iseki0/kotlinx-serialization-bencoding")
+                val projectUrl = "https://github.com/iseki0/kotlinx-serialization-bencoding"
+                name = "kotlinx-serialization-bencoding"
+                description = "A Kotlin serialization codec for bencoding format."
+                url = projectUrl
                 licenses {
                     license {
-                        name.set("Apache-2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                        name = "Apache-2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0"
                     }
                 }
                 developers {
                     developer {
-                        id.set("iseki0")
-                        name.set("iseki zero")
-                        email.set("iseki@iseki.space")
+                        id = "iseki0"
+                        name = "iseki zero"
+                        email = "iseki@iseki.space"
                     }
                 }
+                inceptionYear = "2024"
                 scm {
-                    connection.set("scm:git:https://github.com/iseki0/kotlinx-serialization-bencoding.git")
-                    developerConnection.set("scm:git:https://github.com/iseki0/kotlinx-serialization-bencoding.git")
-                    url.set("https://github.com/iseki0/kotlinx-serialization-bencoding")
+                    connection = "scm:git:$projectUrl.git"
+                    developerConnection = "scm:git:$projectUrl.git"
+                    url = projectUrl
+                }
+                issueManagement {
+                    system = "GitHub"
+                    url = "$projectUrl/issues"
+                }
+                ciManagement {
+                    system = "GitHub"
+                    url = "$projectUrl/actions"
                 }
             }
         }
