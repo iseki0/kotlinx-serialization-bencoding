@@ -48,7 +48,7 @@ internal class InputStreamLexer(input: InputStream) : CommonLexer() {
     override fun skip(n: Int) {
         try {
             input.skipNBytes(n.toLong())
-        }catch (e: EOFException){
+        } catch (e: EOFException) {
             decodeError("unexpected EOF")
         }
         pos += n

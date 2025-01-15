@@ -2,7 +2,6 @@ package space.iseki.bencoding
 
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import space.iseki.bencoding.internal.decodeFromStream
 import space.iseki.bencoding.internal.encodeToStream

@@ -21,6 +21,7 @@ data class Meta(
             return "Info(name='$name', pieceLength=$pieceLength, pieces=(hash)${pieces.hashCode()})"
         }
     }
+
     companion object {
 
         @OptIn(ExperimentalEncodingApi::class)

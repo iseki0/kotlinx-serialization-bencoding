@@ -15,6 +15,7 @@ internal interface EncoderDelegate : BencodeEncoder {
         get() = rootRef.serializersModule
     override val options: BencodeOptions
         get() = rootRef.options
+
     override fun encodeChar(value: Char) = encodeLong(value.code.toLong())
     override fun encodeByte(value: Byte) = encodeLong(value.toLong())
     override fun encodeShort(value: Short) = encodeLong(value.toLong())
