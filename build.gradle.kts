@@ -190,6 +190,7 @@ tasks.withType<DokkaTask> {
         externalDocumentationLink {
             url = URI.create("https://kotlinlang.org/api/kotlinx.serialization/").toURL()
         }
+        includes.from("module.md")
     }
 }
 
