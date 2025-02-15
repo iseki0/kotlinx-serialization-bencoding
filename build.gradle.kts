@@ -1,5 +1,8 @@
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.net.URI
+import java.net.URL
 import java.util.*
 
 plugins {
@@ -7,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.kotlinx.binary.compatibility.validator)
+    alias(libs.plugins.dokka)
     `maven-publish`
     signing
 }
@@ -170,5 +174,22 @@ afterEvaluate {
 tasks.withType<AbstractArchiveTask>().configureEach {
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
+}
+
+tasks.withType<DokkaTask> {
+    dokkaSourceSets.configureEach {
+        sourceLink {
+            localDirectory = project.layout.projectDirectory.dir("src").asFile
+            val p =
+                project.layout.projectDirectory.dir("src").asFile.relativeTo(rootProject.layout.projectDirectory.asFile)
+                    .toString()
+                    .replace('\\', '/')
+            remoteUrl = URI.create("https://github.com/iseki0/kotlinx-serialization-bencoding/tree/master/$p").toURL()
+            remoteLineSuffix = "#L"
+        }
+        externalDocumentationLink {
+            url = URI.create("https://kotlinlang.org/api/kotlinx.serialization/").toURL()
+        }
+    }
 }
 
