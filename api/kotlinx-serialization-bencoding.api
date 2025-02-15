@@ -106,6 +106,11 @@ public abstract interface class space/iseki/bencoding/BencodeOptions {
 	public abstract fun getFloatStrategy ()Lspace/iseki/bencoding/FloatNumberStrategy;
 }
 
+public final class space/iseki/bencoding/BencodingJVM {
+	public static final fun decodeFromStream (Lspace/iseki/bencoding/Bencode;Ljava/io/InputStream;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final fun encodeToStream (Lspace/iseki/bencoding/Bencode;Ljava/lang/Object;Lkotlinx/serialization/KSerializer;Ljava/io/OutputStream;)V
+}
+
 public abstract interface annotation class space/iseki/bencoding/BinaryString : java/lang/annotation/Annotation {
 	public abstract fun strategy ()Lspace/iseki/bencoding/BinaryStringStrategy;
 }
@@ -137,7 +142,7 @@ public final class space/iseki/bencoding/FloatNumberStrategy : java/lang/Enum {
 }
 
 public final class space/iseki/bencoding/internal/BencodingJVM {
-	public static final fun decodeFromStream (Lspace/iseki/bencoding/Bencode;Ljava/io/InputStream;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
-	public static final fun encodeToStream (Lspace/iseki/bencoding/Bencode;Ljava/lang/Object;Lkotlinx/serialization/KSerializer;Ljava/io/OutputStream;)V
+	public static final synthetic fun decodeFromStream (Lspace/iseki/bencoding/Bencode;Ljava/io/InputStream;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static final synthetic fun encodeToStream (Lspace/iseki/bencoding/Bencode;Ljava/lang/Object;Lkotlinx/serialization/KSerializer;Ljava/io/OutputStream;)V
 }
 
