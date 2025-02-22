@@ -26,7 +26,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          cache-encryption-key: ${{ secrets.GradleEncryptionKey }}
+          cache-encryption-key: ${{ secrets.GRADLEENCRYPTIONKEY }}
           validate-wrappers: true
           build-scan-publish: true
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
