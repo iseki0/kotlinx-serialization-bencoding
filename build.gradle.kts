@@ -1,5 +1,4 @@
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URI
 import java.util.*
@@ -177,21 +176,21 @@ tasks.withType<AbstractArchiveTask>().configureEach {
     isReproducibleFileOrder = true
 }
 
-tasks.withType<DokkaTask> {
+dokka {
+    moduleName = "kotlinx-serialization-bencoding"
     dokkaSourceSets.configureEach {
+        includes.from("module.md")
         sourceLink {
             localDirectory = project.layout.projectDirectory.dir("src").asFile
             val p =
                 project.layout.projectDirectory.dir("src").asFile.relativeTo(rootProject.layout.projectDirectory.asFile)
-                    .toString()
-                    .replace('\\', '/')
-            remoteUrl = URI.create("https://github.com/iseki0/kotlinx-serialization-bencoding/tree/master/$p").toURL()
+                    .toString().replace('\\', '/')
+            remoteUrl = URI.create("https://github.com/iseki0/kotlinx-serialization-bencoding/tree/master/$p")
             remoteLineSuffix = "#L"
         }
-        externalDocumentationLink {
-            url = URI.create("https://kotlinlang.org/api/kotlinx.serialization/").toURL()
+        externalDocumentationLinks.create("") {
+            url = URI.create("https://kotlinlang.org/api/kotlinx.serialization/")
         }
-        includes.from("module.md")
     }
 }
 
