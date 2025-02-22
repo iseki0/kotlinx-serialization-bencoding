@@ -2,7 +2,6 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URI
-import java.net.URL
 import java.util.*
 
 plugins {
@@ -36,9 +35,11 @@ kotlin {
     jvmToolchain(21)
     jvm {
         compilations.all {
-            compilerOptions.configure {
-                jvmTarget = JvmTarget.JVM_1_8
-                freeCompilerArgs.add("-Xjvm-default=all-compatibility")
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget = JvmTarget.JVM_1_8
+                    freeCompilerArgs.add("-Xjvm-default=all-compatibility")
+                }
             }
         }
         withJava()
