@@ -41,3 +41,11 @@ bin/
 ### Mac OS ###
 .DS_Store
 .kotlin
+
+/.idea/*
+!/.idea/codeStyles
+.kotlin
+*.log
+
+*.patch
+
