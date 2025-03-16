@@ -24,7 +24,6 @@ internal class BencodeDecoder0(
         lexer.pos(), "$kind is not supported"
     )
 
-    @OptIn(ExperimentalSerializationApi::class)
     private fun unsupported(sd: SerialDescriptor, i: Int): Nothing {
         throw BencodeDecodeException(lexer.pos(), "type of ${sd.serialName}/${sd.getElementName(i)} is not supported")
     }
@@ -39,10 +38,10 @@ internal class BencodeDecoder0(
         unsupported(descriptor, index)
 
     override fun decodeFloatElement(descriptor: SerialDescriptor, index: Int): Float =
-        options.floatStrategy.decodeFloat(descriptor, index)
+        options.floatStrategy.decodeFloat(this, descriptor, index)
 
     override fun decodeDoubleElement(descriptor: SerialDescriptor, index: Int): Double =
-        options.doubleStrategy.decodeDouble(descriptor, index)
+        options.doubleStrategy.decodeDouble(this, descriptor, index)
 
     override fun decodeByteArrayElement(descriptor: SerialDescriptor, index: Int) =
         el(descriptor, index, ::decodeByteArray)
@@ -88,9 +87,9 @@ internal class BencodeDecoder0(
     override fun decodeBoolean(): Boolean = unsupported("boolean")
     override fun decodeByte(): Byte = decodeInt().toByte()
     override fun decodeChar(): Char = decodeInt().toChar()
-    override fun decodeDouble(): Double = options.doubleStrategy.decodeDouble()
+    override fun decodeDouble(): Double = options.doubleStrategy.decodeDouble(this)
     override fun decodeEnum(enumDescriptor: SerialDescriptor) = enumDescriptor.getElementIndex(decodeString())
-    override fun decodeFloat(): Float = options.floatStrategy.decodeFloat()
+    override fun decodeFloat(): Float = options.floatStrategy.decodeFloat(this)
     override fun decodeInline(descriptor: SerialDescriptor): Decoder = this
     override fun decodeInt(): Int = lexer.nextInteger().toInt()
     override fun decodeLong(): Long = lexer.nextInteger()
@@ -99,7 +98,7 @@ internal class BencodeDecoder0(
     override fun decodeShort(): Short = decodeInt().toShort()
     override fun decodeString(): String = lexer.nextBytes().decodeToString()
     override fun decodeBinaryString(strategy: BinaryStringStrategy): String =
-        options.binaryStringStrategy.decodeString(strategy)
+        options.binaryStringStrategy.decodeString(this, strategy)
 
     override fun reportError(message: String): Nothing {
         throw BencodeDecodeException(lexer.pos(), message)

@@ -24,12 +24,11 @@ internal class MapKeyExtractorEncoder(
     }
 
     override fun encodeBinaryString(strategy: BinaryStringStrategy, value: String) {
-        options.binaryStringStrategy.encodeString(strategy, value)
+        options.binaryStringStrategy.encodeString(this, strategy, value)
     }
 
     var key: String? = null
 
-    @OptIn(ExperimentalSerializationApi::class)
     private fun keyMustBeString(): Nothing =
         parent.reportError("key must be string(in ${descriptor.serialName}/[$index]${descriptor.getElementName(index)})")
 
@@ -53,7 +52,6 @@ internal class MapKeyExtractorEncoder(
         keyMustBeString()
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
         encodeString(enumDescriptor.getElementName(index))
     }

@@ -39,11 +39,11 @@ internal interface CompositeEncoderDelegate : BencodeCompositeEncoder {
     }
 
     override fun encodeFloatElement(descriptor: SerialDescriptor, index: Int, value: Float) {
-        options.floatStrategy.encodeFloat(descriptor, index, value)
+        options.floatStrategy.encodeFloat(this, descriptor, index, value)
     }
 
     override fun encodeDoubleElement(descriptor: SerialDescriptor, index: Int, value: Double) {
-        options.doubleStrategy.encodeDouble(descriptor, index, value)
+        options.doubleStrategy.encodeDouble(this, descriptor, index, value)
     }
 
     override fun encodeBooleanElement(descriptor: SerialDescriptor, index: Int, value: Boolean) {
@@ -98,7 +98,7 @@ internal interface CompositeEncoderDelegate : BencodeCompositeEncoder {
         strategy: BinaryStringStrategy,
         value: String
     ) {
-        options.binaryStringStrategy.encodeString(strategy, descriptor, index, value)
+        options.binaryStringStrategy.encodeString(this, strategy, descriptor, index, value)
     }
 
     private fun throwForbiddenCallToBeginStructure(descriptor: SerialDescriptor, index: Int): Nothing {

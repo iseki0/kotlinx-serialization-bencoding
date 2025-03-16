@@ -29,37 +29,39 @@ enum class BinaryStringStrategy {
     /**
      * Encode every [Byte] into [Char] directly, so all character must be in code point `0..255`.
      */
-    Raw,
-    ;
+    Raw, ;
 
-    context(BencodeDecoder)
     @OptIn(ExperimentalEncodingApi::class)
-    internal fun decodeString(strategy: BinaryStringStrategy) = work(
+    internal fun decodeString(decoder: BencodeDecoder, strategy: BinaryStringStrategy) = work(
         strategy = strategy,
-        options = options,
-        base64 = { kotlin.io.encoding.Base64.encode(decodeByteArray()) },
-        raw = { bytes2StringIso88591(decodeByteArray()) },
+        options = decoder.options,
+        base64 = { kotlin.io.encoding.Base64.encode(decoder.decodeByteArray()) },
+        raw = { bytes2StringIso88591(decoder.decodeByteArray()) },
     )
 
-    context(BencodeEncoder)
     @OptIn(ExperimentalEncodingApi::class)
-    internal fun encodeString(strategy: BinaryStringStrategy, value: String) {
+    internal fun encodeString(encoder: BencodeEncoder, strategy: BinaryStringStrategy, value: String) {
         work(
             strategy = strategy,
-            options = options,
-            base64 = { encodeByteArray(kotlin.io.encoding.Base64.decode(value)) },
-            raw = { encodeByteArray(encodeRaw(value)) },
+            options = encoder.options,
+            base64 = { encoder.encodeByteArray(kotlin.io.encoding.Base64.decode(value)) },
+            raw = { encoder.encodeByteArray(encodeRaw(value)) },
         )
     }
 
-    context(BencodeCompositeEncoder)
     @OptIn(ExperimentalEncodingApi::class)
-    internal fun encodeString(strategy: BinaryStringStrategy, descriptor: SerialDescriptor, index: Int, value: String) {
+    internal fun encodeString(
+        encoder: BencodeCompositeEncoder,
+        strategy: BinaryStringStrategy,
+        descriptor: SerialDescriptor,
+        index: Int,
+        value: String,
+    ) {
         work(
             strategy = strategy,
-            options = options,
-            base64 = { encodeByteArrayElement(descriptor, index, kotlin.io.encoding.Base64.decode(value)) },
-            raw = { encodeByteArrayElement(descriptor, index, encodeRaw(value)) },
+            options = encoder.options,
+            base64 = { encoder.encodeByteArrayElement(descriptor, index, kotlin.io.encoding.Base64.decode(value)) },
+            raw = { encoder.encodeByteArrayElement(descriptor, index, encodeRaw(value)) },
         )
     }
 

@@ -20,8 +20,8 @@ internal interface EncoderDelegate : BencodeEncoder {
     override fun encodeByte(value: Byte) = encodeLong(value.toLong())
     override fun encodeShort(value: Short) = encodeLong(value.toLong())
     override fun encodeInt(value: Int) = encodeLong(value.toLong())
-    override fun encodeFloat(value: Float) = options.floatStrategy.encodeFloat(value)
-    override fun encodeDouble(value: Double) = options.doubleStrategy.encodeDouble(value)
+    override fun encodeFloat(value: Float) = options.floatStrategy.encodeFloat(this, value)
+    override fun encodeDouble(value: Double) = options.doubleStrategy.encodeDouble(this, value)
     override fun encodeBoolean(value: Boolean) = reportError("boolean is not supported")
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -30,7 +30,7 @@ internal interface EncoderDelegate : BencodeEncoder {
     }
 
     override fun encodeBinaryString(strategy: BinaryStringStrategy, value: String) {
-        options.binaryStringStrategy.encodeString(strategy, value)
+        options.binaryStringStrategy.encodeString(this, strategy, value)
     }
 
     @ExperimentalSerializationApi

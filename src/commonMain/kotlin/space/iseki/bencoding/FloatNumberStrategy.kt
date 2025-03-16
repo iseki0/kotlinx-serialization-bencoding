@@ -31,83 +31,80 @@ enum class FloatNumberStrategy {
      */
     DecimalString, ;
 
-    context(BencodeDecoder)
-    internal fun decodeDouble(): Double {
+    internal fun decodeDouble(decoder: BencodeDecoder): Double {
         return when (this) {
-            Disallow -> reportError("Double number is not allowed")
-            Rounded -> decodeLong().toDouble()
-            IntegerIEEE754 -> Double.fromBits(decodeLong())
-            DecimalString -> decodeString().toDouble()
+            Disallow -> decoder.reportError("Double number is not allowed")
+            Rounded -> decoder.decodeLong().toDouble()
+            IntegerIEEE754 -> Double.fromBits(decoder.decodeLong())
+            DecimalString -> decoder.decodeString().toDouble()
         }
     }
 
-    context(BencodeCompositeDecoder)
-    internal fun decodeDouble(descriptor: SerialDescriptor, index: Int): Double {
+    internal fun decodeDouble(decoder: BencodeCompositeDecoder, descriptor: SerialDescriptor, index: Int): Double {
         return when (this) {
-            Disallow -> reportError("Double number is not allowed", descriptor, index)
-            Rounded -> decodeLongElement(descriptor, index).toDouble()
-            IntegerIEEE754 -> Double.fromBits(decodeLongElement(descriptor, index))
-            DecimalString -> decodeStringElement(descriptor, index).toDouble()
+            Disallow -> decoder.reportError("Double number is not allowed", descriptor, index)
+            Rounded -> decoder.decodeLongElement(descriptor, index).toDouble()
+            IntegerIEEE754 -> Double.fromBits(decoder.decodeLongElement(descriptor, index))
+            DecimalString -> decoder.decodeStringElement(descriptor, index).toDouble()
         }
     }
 
-    context(BencodeDecoder)
-    internal fun decodeFloat(): Float {
+    internal fun decodeFloat(decoder: BencodeDecoder): Float {
         return when (this) {
-            Disallow -> reportError("Float number is not allowed")
-            Rounded -> decodeLong().toFloat()
-            IntegerIEEE754 -> Float.fromBits(decodeInt())
-            DecimalString -> decodeString().toFloat()
+            Disallow -> decoder.reportError("Float number is not allowed")
+            Rounded -> decoder.decodeLong().toFloat()
+            IntegerIEEE754 -> Float.fromBits(decoder.decodeInt())
+            DecimalString -> decoder.decodeString().toFloat()
         }
     }
 
-    context(BencodeCompositeDecoder)
-    internal fun decodeFloat(descriptor: SerialDescriptor, index: Int): Float {
+    internal fun decodeFloat(decoder: BencodeCompositeDecoder, descriptor: SerialDescriptor, index: Int): Float {
         return when (this) {
-            Disallow -> reportError("Float number is not allowed", descriptor, index)
-            Rounded -> decodeLongElement(descriptor, index).toFloat()
-            IntegerIEEE754 -> Float.fromBits(decodeIntElement(descriptor, index))
-            DecimalString -> decodeStringElement(descriptor, index).toFloat()
+            Disallow -> decoder.reportError("Float number is not allowed", descriptor, index)
+            Rounded -> decoder.decodeLongElement(descriptor, index).toFloat()
+            IntegerIEEE754 -> Float.fromBits(decoder.decodeIntElement(descriptor, index))
+            DecimalString -> decoder.decodeStringElement(descriptor, index).toFloat()
         }
     }
 
-    context(BencodeEncoder)
-    internal fun encodeDouble(value: Double) {
+    internal fun encodeDouble(encoder: BencodeEncoder, value: Double) {
         when (this) {
-            Disallow -> reportError("Double number is not allowed")
-            Rounded -> encodeLong(value.toLong())
-            IntegerIEEE754 -> encodeLong(value.toRawBits())
-            DecimalString -> encodeString(value.toString())
+            Disallow -> encoder.reportError("Double number is not allowed")
+            Rounded -> encoder.encodeLong(value.toLong())
+            IntegerIEEE754 -> encoder.encodeLong(value.toRawBits())
+            DecimalString -> encoder.encodeString(value.toString())
         }
     }
 
-    context(BencodeCompositeEncoder)
-    internal fun encodeDouble(descriptor: SerialDescriptor, index: Int, value: Double) {
+    internal fun encodeDouble(
+        encoder: BencodeCompositeEncoder,
+        descriptor: SerialDescriptor,
+        index: Int,
+        value: Double,
+    ) {
         when (this) {
-            Disallow -> reportError("Double number is not allowed", descriptor, index)
-            Rounded -> encodeLongElement(descriptor, index, value.toLong())
-            IntegerIEEE754 -> encodeLongElement(descriptor, index, value.toRawBits())
-            DecimalString -> encodeStringElement(descriptor, index, value.toString())
+            Disallow -> encoder.reportError("Double number is not allowed", descriptor, index)
+            Rounded -> encoder.encodeLongElement(descriptor, index, value.toLong())
+            IntegerIEEE754 -> encoder.encodeLongElement(descriptor, index, value.toRawBits())
+            DecimalString -> encoder.encodeStringElement(descriptor, index, value.toString())
         }
     }
 
-    context(BencodeEncoder)
-    internal fun encodeFloat(value: Float) {
+    internal fun encodeFloat(encoder: BencodeEncoder, value: Float) {
         when (this) {
-            Disallow -> reportError("Float number is not allowed")
-            Rounded -> encodeLong(value.toLong())
-            IntegerIEEE754 -> encodeInt(value.toRawBits())
-            DecimalString -> encodeString(value.toString())
+            Disallow -> encoder.reportError("Float number is not allowed")
+            Rounded -> encoder.encodeLong(value.toLong())
+            IntegerIEEE754 -> encoder.encodeInt(value.toRawBits())
+            DecimalString -> encoder.encodeString(value.toString())
         }
     }
 
-    context(BencodeCompositeEncoder)
-    internal fun encodeFloat(descriptor: SerialDescriptor, index: Int, value: Float) {
+    internal fun encodeFloat(encoder: BencodeCompositeEncoder, descriptor: SerialDescriptor, index: Int, value: Float) {
         when (this) {
-            Disallow -> reportError("Float number is not allowed", descriptor, index)
-            Rounded -> encodeLongElement(descriptor, index, value.toLong())
-            IntegerIEEE754 -> encodeIntElement(descriptor, index, value.toRawBits())
-            DecimalString -> encodeStringElement(descriptor, index, value.toString())
+            Disallow -> encoder.reportError("Float number is not allowed", descriptor, index)
+            Rounded -> encoder.encodeLongElement(descriptor, index, value.toLong())
+            IntegerIEEE754 -> encoder.encodeIntElement(descriptor, index, value.toRawBits())
+            DecimalString -> encoder.encodeStringElement(descriptor, index, value.toString())
         }
     }
 }
