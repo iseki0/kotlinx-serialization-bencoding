@@ -45,14 +45,24 @@ kotlin {
     }
     js {
         browser()
+        nodejs()
+    }
+    wasmJs {
+        browser()
+        nodejs()
+        d8()
     }
 
+    // Tier 1
     macosX64()
     macosArm64()
     iosSimulatorArm64()
     iosX64()
     iosArm64()
 
+    // Tier 2
+    linuxX64()
+    linuxArm64()
     watchosArm32()
     watchosArm64()
     watchosX64()
@@ -61,9 +71,13 @@ kotlin {
     tvosX64()
     tvosArm64()
 
-    linuxX64()
-    linuxArm64()
+    // Tier 3
+    androidNativeArm32()
+    androidNativeArm64()
+    androidNativeX64()
+    androidNativeX86()
     mingwX64()
+    watchosDeviceArm64()
 }
 
 java {
