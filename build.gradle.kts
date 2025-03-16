@@ -64,7 +64,6 @@ kotlin {
     linuxX64()
     linuxArm64()
     mingwX64()
-    
 
     sourceSets {
         all {
