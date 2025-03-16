@@ -46,6 +46,26 @@ kotlin {
     js {
         browser()
     }
+
+    macosX64()
+    macosArm64()
+    iosSimulatorArm64()
+    iosX64()
+    iosArm64()
+
+    watchosArm32()
+    watchosArm64()
+    watchosX64()
+    watchosSimulatorArm64()
+    tvosSimulatorArm64()
+    tvosX64()
+    tvosArm64()
+
+    linuxX64()
+    linuxArm64()
+    mingwX64()
+    
+
     sourceSets {
         all {
             languageSettings {

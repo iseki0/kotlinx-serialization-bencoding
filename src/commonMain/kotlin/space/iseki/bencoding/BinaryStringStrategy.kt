@@ -1,7 +1,6 @@
 package space.iseki.bencoding
 
 import kotlinx.serialization.descriptors.SerialDescriptor
-import space.iseki.bencoding.internal.bytes2StringIso88591
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
@@ -39,7 +38,7 @@ enum class BinaryStringStrategy {
         strategy = strategy,
         options = options,
         base64 = { kotlin.io.encoding.Base64.encode(decodeByteArray()) },
-        raw = { decodeRaw(decodeByteArray()) },
+        raw = { bytes2StringIso88591(decodeByteArray()) },
     )
 
     context(BencodeEncoder)
@@ -85,11 +84,7 @@ enum class BinaryStringStrategy {
         return bytes
     }
 
-    private fun decodeRaw(bytes: ByteArray): String {
-        return bytes2StringIso88591(bytes) ?: decodeRawFallback(bytes)
-    }
-
-    private fun decodeRawFallback(bytes: ByteArray): String {
+    private fun bytes2StringIso88591(bytes: ByteArray): String {
         val chars = CharArray(bytes.size)
         for (i in bytes.indices) {
             chars[i] = (bytes[i].toInt() and 0xff).toChar()

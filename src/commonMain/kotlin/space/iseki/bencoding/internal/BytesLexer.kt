@@ -14,7 +14,7 @@ internal class BytesLexer(private val bytes: ByteArray) : CommonLexer() {
         while (i < bytes.size && (bytes[i] in '0'.code..'9'.code || bytes[i] == '-'.code.toByte())) i++
         if (i == pos) decodeError("invalid number")
         try {
-            return bytes2Long(bytes, pos, i - pos)
+            return bytes.copyOfRange(pos, i).decodeToString().toLong()
         } catch (e: NumberFormatException) {
             decodeError("invalid number")
         } finally {
